@@ -43,7 +43,8 @@ var equipment = new Schema(
           type: Boolean,
           default: false
         },
-        finishedDate: Date
+        finishedDate: Date,
+        comment: String
       }
     ],
     date: {

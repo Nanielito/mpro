@@ -73,6 +73,10 @@ block content-mpro
                 button#startAttentionSubmit.btn.btn-primary(type="submit", style="display:none; cursor:pointer; background-color:rgb(0,155,219)") Iniciar
                 button#finishAttentionSubmit.btn.btn-primary(type="submit", style="display:none; cursor:pointer; background-color:rgb(0,155,219)") Finalizar
           form(role="form", id="updateMaintenanceActivityAttention", name="updateMaintenanceActivityAttention", action="/maintenanceActivityAttentions", method="put")
+            .row#commentRow(style="display:none;")
+              label.col-12.col-form-label(for="comment") Observaciones:
+              .col-12
+                textarea.form-control(id="comment", name="comment", wrap="hard")
             .row
               .col-12(style="text-align:right")
                 button.btn.btn-secondary(type="button", data-dismiss="modal", style="margin-right:1%;") Cerrar
