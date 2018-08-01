@@ -15,16 +15,17 @@ block content-mpro
             #equipmentType.tab-pane.active(role="tabpanel")
               .row.equipment-nav-row.nav-row-padding
                 .col-md-10
-                  .input-group
+                  .input-group.has-clear
                     input.form-control.input-search(type="text", id="equipmentTypeSearchInput", placeholder="Buscar tipo de equipo")
-                    a.fa.fa-search.fa-w-16.fa-3x
+                    span.form-control-clear.fa.fa-times.fa-3.hidden
+                    a.fa.fa-search.fa-w-16.fa-3x(id="equipmentTypeSearchButtom", data-type="equipmentTypes")
                 .col-md-2
                   button#addEquipmentType.btn.btn-primary.button-search(type="button", data-toggle="addEquipmentTypeModal")
                     i.fa.fa-plus.noWrap
                       | Agregar Tipo de Equipo
               .row.equipment-nav-row.no-padding 
                 .col-md-12
-                  table.table.table-header
+                  table.table.table-header.table-equipmentType
                     thead
                       th #
                       th Nombre
@@ -56,16 +57,17 @@ block content-mpro
             #equipment.tab-pane(role="tabpanel")
               .row.equipment-nav-row.nav-row-padding
                 .col-md-10
-                  .input-group
+                  .input-group.has-clear
                     input.form-control.input-search(type="text", id="equipmentSearchInput", placeholder="Buscar equipo")
-                    a.fa.fa-search.fa-w-16.fa-3x
+                    span.form-control-clear.fa.fa-times.fa-3.hidden
+                    a.fa.fa-search.fa-w-16.fa-3x(id="equipmentSearchButtom", data-type="equipments")
                 .col-md-2
                   button#addEquipment.btn.btn-primary.button-search(type="button", data-toggle="addEquipmentModal")
                     i.fa.fa-plus 
                       | Agregar Equipo
               .row.equipment-nav-row.no-padding.nav-row-padding
                 .col-md-12
-                  table.table.table-header
+                  table.table.table-header.table-equipment
                     thead
                       th #
                       th Nombre

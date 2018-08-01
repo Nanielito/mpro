@@ -1,0 +1,23 @@
+each account, i in data
+    tr
+        td=i+1
+        td=account.name
+        td=account.email
+        td=account.email
+        td=account.role
+        td
+            if account.role == "adminCompany"
+                | #{account.company.name}
+            else if account.role != "admin"
+                | #{account.company.company.name}
+        td
+            if account.role != "adminCompany"
+               | #{account.company.name}
+        td=account.date
+        td
+            if account.status==true
+                label.label-sm.label-success Activo
+            else
+                label.label-sm.label-default Inactivo
+        td
+            a.btn.default.btn-xs.blue-stripe.edit-account(href="/accounts", name="editAccount", data-toggle="editAccountModal", data-id=account._id) Editar

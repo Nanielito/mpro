@@ -41,7 +41,7 @@ log.getLogs = function (total, skip) {
                           
       accountModel
       .find(query)
-      .then(function (data) {
+      .then(function (data) {        
         resolve(data)
       })
       .catch(reject);
@@ -83,11 +83,11 @@ log.getLogs = function (total, skip) {
 
   var getLogsByUsersId = function (ids) {
     return new Promise(function (resolve, reject) {
-      var users = ids.map(function (o) {
+      var usersList = ids.map(function (o) {
         return Mongoose.Types.ObjectId(o._id);
       });            
-
-      var query = {user: {$in: users}};
+      
+      var query = {user: {$in: usersList}};
 
       logModel.find(query).exec()
       .then(function (data) {
@@ -155,16 +155,8 @@ log.getLogs = function (total, skip) {
   var onFilterLogsByBranchCompany = function (user) {
     return new Promise(function (resolve, reject) {
       accountByCompanyPromise(user)
-      .then(function (accounts) {
-        var arr = [];
-        
-        accounts.forEach(function (account) {
-          if (account) {
-            arr.push(account._id);
-          }
-        }, this);
-        
-        getLogsByUsersId(arr)
+      .then(function (accounts) {        
+        getLogsByUsersId(accounts)
         .then(function (data) {
           var result=[];
           _.each(data, function(value, key){            

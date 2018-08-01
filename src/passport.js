@@ -30,11 +30,20 @@ module.exports = function (passport) {
 	});
 
 	passport.use('login', new LocalStrategy({passReqToCallback: true}, function (req, username, password, done) {
-		var query = {'username': username};
+		var query = {'username': username, 'status': true};
 	
-		mongoAccount.findOne(query).populate('company').exec(callback);
+		mongoAccount.findOne(query)
+		.populate({
+			path:'company',
+			model:'entity',
+			populate:{
+			  path:'company',
+			  model:'entity'
+			}
+		})
+		.exec(callback);
 
-		function callback(err, doc) {
+		function callback(err, doc) {			
 			if (err) {
 				return done({error: true, data: false, message: err});
 			}

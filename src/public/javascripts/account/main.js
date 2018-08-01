@@ -69,7 +69,7 @@ $(document).ready(function () {
     return false;
   });
 
-  $('a[name="editAccount"]').click(function (e) {
+  $(document).on('click', 'a[name="editAccount"]', function (e) {
     e.preventDefault();
     $('#editAccountModal').modal('show');
     var action = this.getAttribute('href').concat('/', this.getAttribute('data-id'));
@@ -147,7 +147,7 @@ $(document).ready(function () {
           }
           else if (control.val().trim().length > 0) {
             if(item.getAttribute("type")=="email"){
-              if(!(/^[a-zA-Z0-9]+\@[a-zA-Z0-9]+\.[a-zA-Z0-9-]{0,5}$/ig).exec(item.value)){
+              if(!(/^[a-zA-Z0-9_-]+\@[a-zA-Z0-9]+\.[a-zA-Z0-9-]{0,5}$/ig).exec(item.value)){
                 $(item).after('<p style="color:red;" name="requireFieldMessage">Correo invalido</p>');
                 return;
               }
@@ -176,6 +176,15 @@ $(document).ready(function () {
         }
       }
     });
+
+    var roleControl = $(form).find('#role');
+    var branchCompanyControl = $(form).find('#branchCompany');
+
+    if (typeof roleControl !== 'undefined' && $(branchCompanyControl).val() === 'Seleccione') {
+      if ((/adminBranchCompany|technician/).test($(roleControl).val()) === true) {
+        $(branchCompanyControl).after('<p style="color:red;" name="requireFieldMessage">Campo requerido</p>');
+      }
+    }
 
     if (!$(form).find('[name="requireFieldMessage"]').length > 0) {
       var action = $($(this).parents('form')).attr('action');
@@ -230,10 +239,10 @@ $(document).ready(function () {
 
     var form = document[$($(this).parents('form')).attr('name')];
     var data = {};
-
+    
     _.each(form, function (item, i) {
       var control = $(item);
-
+      
       if (control.attr('class').indexOf('form-control') > -1 || control.attr('class').indexOf('form-control-custom') > -1 || control.attr('type') === 'hidden') {
         if (control.prop('tagName').toLowerCase() === 'input' || control.prop('tagName').toLowerCase() === 'textarea') {
           
@@ -241,7 +250,7 @@ $(document).ready(function () {
             data[control.attr('name')] = control.is(':checked');
           }else{    
             if(item.getAttribute("type")=="email"){
-              if(!(/^[a-zA-Z0-9]+\@[a-zA-Z0-9]+\.[a-zA-Z0-9-]{0,5}$/ig).exec(item.value)){
+              if(!(/^[a-zA-Z0-9_-]+\@[a-zA-Z0-9]+\.[a-zA-Z0-9-]{0,5}$/ig).exec(item.value)){
                 $(item).after('<p style="color:red;" name="requireFieldMessage">Correo invalido</p>');              
               }
             }
@@ -266,7 +275,7 @@ $(document).ready(function () {
       var _form = $($(this).parents('form')),
           action = _form.attr('action').concat('/',$('#hidden_id').val()),
           method = _form.attr('method');
-      
+
       var request = $.ajax({
         url: action,
         method: method,
@@ -276,21 +285,7 @@ $(document).ready(function () {
       request.done(function (response) {
         
         if (!response.error) {
-          var obj = response.data;   
-          
-          if (obj) {
-            if (obj.name !== $.trim($('#entityName').val())) {
-              $('#entityName').text(obj.name);
-            }
-            
-            if (obj.email !== $.trim($('#entityEmail').val())) {
-              $('#entityEmail').text(obj.email);
-            }
-            
-            if (obj.location !== $.trim($('#entityLocation').val())) {
-              $('#entityLocation').val(obj.location);
-            }           
-          }
+          var obj = response.data;          
           document.addAccountForm.reset();
           $('#editEntityModal, #addBranchCompanyModal, #addAccountModal').modal('hide');
           window.location.reload();
@@ -307,4 +302,14 @@ $(document).ready(function () {
     return false;
   });
   
+  $('#userSearchButtom').click(function(e){
+    e.preventDefault();
+    var searchImput = $('#userSearchInput').val(), url='', rows='';        
+      url='/accounts/0-1000/'.concat(searchImput.length?searchImput:'all');
+      $.get(url, function(data){        
+        $('.table tbody').empty();
+        $('.table tbody').html(data);        
+      });
+  });
+
 });

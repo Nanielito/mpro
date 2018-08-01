@@ -345,7 +345,7 @@ $(document).ready(function () {
         if (control.prop('tagName').toLowerCase() === 'input' || control.prop('tagName').toLowerCase() === 'textarea') {
           if (control.val().trim().length > 0) {
             if(item.getAttribute("type")=="email"){
-              if(!(/^[a-zA-Z0-9]+\@[a-zA-Z0-9]+\.[a-zA-Z0-9-]{0,5}$/ig).exec(item.value)){
+              if(!(/^[a-zA-Z0-9_-]+\@[a-zA-Z0-9]+\.[a-zA-Z0-9-]{0,5}$/ig).exec(item.value)){
                 $(item).after('<p style="color:red;" name="description">Correo invalido</p>');
                 return;
               }
@@ -553,6 +553,61 @@ $(document).ready(function () {
     });
 
     return false;
+  });
+
+  $(document).on('click', '.searchEquipmentType, .deleteEquipmentType', function(e){
+    e.preventDefault();
+    var _id = this.getAttribute('data-id');
+    if($(this).hasClass('searchEquipmentType')){
+      searchEquipmentType(_id);
+    }else{
+      deleteEquipmentType(_id);
+    }
+  });
+
+  $('#equipmentTypeSearchButtom, #equipmentSearchButtom').click(function(e){
+    e.preventDefault();
+    var type= $(this).attr('data-type'), 
+        selector=type=='equipmentTypes'?'table-equipmentType':'table-equipment', 
+        searchImput = $('#'.concat(type=='equipmentTypes'?'equipmentTypeSearchInput':'equipmentSearchInput')).val(), 
+        url='', rows='';
+
+      url='/'.concat(type, '/0/1000/', searchImput.length?searchImput:'all');
+      
+      $.get(url, function(data){
+        
+        if(!data.error){
+
+          if(type=='equipmentTypes'){
+            _.each(data.data, function(value, key){
+              rows=rows.concat(
+                '<tr><td>',key+1, '</td>',
+                '<td>', value.name, '</td>',
+                '<td>', value.company.name, '</td>',
+                '<td>', value.status ? 'Activo': 'Inactivo', '</td>',
+                '<td><a class="btn default btn-xs blue-stripe searchEquipmentType" data-id="',value._id,'">Editar</a></td>',
+                '<td><i class="fa fa-trash deleteEquipmentType" data-id="',value._id,'" aria-hidden="true"></i></td></tr>')
+            });
+          }else{
+            _.each(data.data, function(value, key){
+              rows=rows.concat(
+                '<tr><td>',key+1, '</td>',
+                '<td>', value.name, '</td>',
+                '<td>', value.code, '</td>',
+                '<td>', value.location, '</td>',
+                '<td>', value.equipmentType.name, '</td>',
+                '<td>', value.branchCompany.company.name, '</td>',
+                '<td>', value.branchCompany.name, '</td>',
+                '<td>', value.userAssigned.name, '</td>',
+                '<td><a class="btn default btn-xs blue-stripe" href="/home/equipments/',value._id,'">Editar</a></td>',
+                '<td><i class="fa fa-trash" aria-hidden="true"></i></td></tr>')
+            });
+          }
+          $('.'.concat(selector, ' tbody')).empty();
+          $('.'.concat(selector, ' tbody')).html(rows);
+        }
+      });
+
   });
 
   return false;

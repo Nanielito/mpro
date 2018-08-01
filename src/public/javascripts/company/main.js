@@ -27,7 +27,7 @@ $(document).ready(function () {
           
           if (item.value.length > 0) {
             if(item.getAttribute("type")=="email"){
-              if(!(/^[a-zA-Z0-9]+\@[a-zA-Z0-9]+\.[a-zA-Z0-9-]{0,5}$/ig).exec(item.value)){
+              if(!(/^[a-zA-Z0-9_-]+\@[a-zA-Z0-9]+\.[a-zA-Z0-9-]{0,5}$/ig).exec(item.value)){
                 $(item).after('<p style="color:red;" name="description">Correo invalido</p>');
                 return;
               }
@@ -74,7 +74,7 @@ $(document).ready(function () {
     }
   });
   
-  $('.edit-company').click(function(e){
+  $(document).on('click', '.edit-company', function(e){
     e.preventDefault();
     $('#editCompanyModal').modal('show');
     
@@ -84,18 +84,27 @@ $(document).ready(function () {
     
     $.get(action, function(data){
       var form=data.data,
-          docform= document.editCompanyForm;      
+          docform= document.editCompanyForm;
       _.each(docform, function(doc, key){
-        if(doc.className=="form-control"){          
-          var aux = form[doc.getAttribute("name")];          
-          if(typeof aux == "object"){
+        if(doc.className=="form-control"){
+          var element = form[doc.getAttribute("name")];
+           
+          if(typeof element == "object"){
             $(".editModal #".concat(doc.getAttribute("name"))).parents(".form-group").css({display:''});
-            $(".editModal #".concat(doc.getAttribute("name"), " option[value='",aux._id,"']")).attr("selected", true)
-          }else if(aux!= undefined){
-            $(".editModal #".concat(doc.getAttribute("name"))).val(aux)
+            $(".editModal #".concat(doc.getAttribute("name"), " option[value='",element._id,"']")).attr("selected", true);
+          }else if(element!= undefined){
+            $(".editModal #".concat(doc.getAttribute("name"))).val(element);
           }
         }
       });
+      
+      var editStatus = $('.editModal #status');
+
+      if(form.status)
+        editStatus.attr('checked', true);
+      else
+        editStatus.removeAttr('checked');
+
     });
   });
 
@@ -108,12 +117,15 @@ $(document).ready(function () {
     var data = {};
 
     _.each(form, function (item, i) {      
-      if (item.getAttribute('class') === 'form-control' || item.type === 'hidden') {
+      if (item.getAttribute('class') === 'form-control' || item.type === 'hidden' || item.getAttribute('class') == 'form-control-custom') {
         if (item.tagName.toLowerCase() === 'input' || item.tagName.toLowerCase() === 'textarea') {
           
-          if (item.value.length > 0) {
+          if (item.getAttribute('type') === 'checkbox') {            
+            data[item.name] = $(item).prop('checked');
+          }
+          else if (item.value.length > 0) {
             if(item.getAttribute("type")=="email"){
-              if(!(/^[a-zA-Z0-9]+\@[a-zA-Z0-9]+\.[a-zA-Z0-9-]{0,5}$/ig).exec(item.value)){
+              if(!(/^[a-zA-Z0-9_-]+\@[a-zA-Z0-9]+\.[a-zA-Z0-9-]{0,5}$/ig).exec(item.value)){
                 $(item).after('<p style="color:red;" name="description">Correo invalido</p>');
                 return;
               }
@@ -140,6 +152,7 @@ $(document).ready(function () {
             $(item).after('<p style="color:red;" name="description">Campo requerido</p>');
           }
         }
+
       }
     });
 
@@ -147,7 +160,7 @@ $(document).ready(function () {
       var _form = $($(this).parents('form')),
           action = _form.attr('action').concat('/',$('#_id').val()),
           method = _form.attr('method');
-
+      
       var request = $.ajax({
         url: action,
         method: method,
@@ -168,6 +181,26 @@ $(document).ready(function () {
       });
 
     }
-  })
+  });
+
+  $('input[type=checkbox]#status').change(function (e) {
+    e.preventDefault();
+    $('input#statusValue').val($(this).prop('checked') ? 'Activo' : 'Inactivo');
+    return false;
+  });
+
+  $('#entitySearchButtom, #entityBranchSearchButtom').click(function(e){
+    e.preventDefault();    
+    var type= $(this).attr('data-type'), 
+        selector=type=='company'?'table-entity':'table-branchEntity',
+        buttomSelector=type=='company'?'companySearchInput':'branchCompanySearchInput';
+        searchImput = $('#'.concat(buttomSelector)).val(),        
+        url='/entities/0/1000/'.concat(type, '/', searchImput.length?searchImput:'all');
+
+    $.get(url, function(data){
+      $('.'.concat(selector, ' tbody')).empty();
+      $('.'.concat(selector, ' tbody')).html(data);        
+    });
+  });
   
 });

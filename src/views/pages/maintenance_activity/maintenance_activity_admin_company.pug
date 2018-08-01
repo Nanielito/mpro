@@ -15,16 +15,17 @@ block content-mpro
             #maintenanceActivity.tab-pane.active(role="tabpanel")
               .row.activity-nav-row
                 .col-md-10
-                  .input-group
+                  .input-group.has-clear
                     input.form-control.input-search(type="text", id="maintenanceActivitySearchInput", placeholder="Buscar actividad")
-                    a.fa.fa-search.fa-w-16.fa-3x
+                    span.form-control-clear.fa.fa-times.fa-3.hidden
+                    a.fa.fa-search.fa-w-16.fa-3x(id="maintenanceActivitySearchButtom", data-type="maintenanceActivities")
                 .col-md-2(style="padding-left:0;")
                   button#manageActivity.btn.btn-primary(type="button", data-toggle="manageActivityModal")
-                      i.fa.fa-plus 
+                      i.fa.fa-plus.noWrap 
                         | Gestionar Actividades
               .row.activity-nav-row.no-padding 
                 .col-md-12
-                  table.table.table-header
+                  table.table.table-header.table-maintenanceActivity
                     thead
                       th #
                       th Nombre
@@ -56,16 +57,17 @@ block content-mpro
             #maintenanceActivityAttention.tab-pane(role="tabpanel")
               .row.activity-nav-row
                 .col-md-10
-                  .input-group
+                  .input-group.has-clear
                     input.form-control.input-search(type="text", id="maintenanceActivityAttentionSearchInput", placeholder="Buscar atención")
-                    a.fa.fa-search.fa-w-16.fa-3x
+                    span.form-control-clear.fa.fa-times.fa-3.hidden
+                    a.fa.fa-search.fa-w-16.fa-3x(id="maintenanceActivityAttentionSearchButtom", data-type="maintenanceActivityAttentions")
                 .col-md-2(style="padding-left:0;")
                   button#manageActivityAttention.btn.btn-primary(type="button", data-toggle="manageActivityModal")
-                      i.fa.fa-plus 
+                      i.fa.fa-plus.noWrap 
                         | Gestionar Atenciones
               .row.activity-nav-row.no-padding
                 .col-md-12
-                  table.table.table-header
+                  table.table.table-header.table-maintenanceActivityAttention
                     thead
                       th #
                       th Actividad

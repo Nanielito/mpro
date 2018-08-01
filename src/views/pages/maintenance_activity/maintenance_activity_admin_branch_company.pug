@@ -15,16 +15,17 @@ block content-mpro
             #maintenanceActivity.tab-pane.active(role="tabpanel")
               .row.activity-nav-row
                 .col-md-10
-                  .input-group
+                  .input-group.has-clear
                     input.form-control.input-search(type="text", id="maintenanceActivitySearchInput", placeholder="Buscar Actividad")
-                    a.fa.fa-search.fa-w-16.fa-3x
+                    span.form-control-clear.fa.fa-times.fa-3.hidden
+                    a.fa.fa-search.fa-w-16.fa-3x(id="maintenanceActivitySearchButtom", data-type="maintenanceActivities")
                 .col-md-2(style="padding-left:0;")
                   button#manageActivity.btn.btn-primary(type="button", data-toggle="manageActivityModal")
                       i.fa.fa-plus 
                         | Gestionar Actividades
               .row.activity-nav-row.no-padding
                 .col-md-12
-                  table.table.table-header
+                  table.table.table-header.table-maintenanceActivity
                     thead
                       th #
                       th Nombre
@@ -44,22 +45,23 @@ block content-mpro
                               label.label-sm.label-default Inactivo
                           td
                             if maintenanceActivity.deleted == false
-                              a.btn.default.btn-xs.blue-stripe(onclick="searchMaintenanceActivity('" + maintenanceActivity._id + "')")
+                              a.btn.default.btn-xs.blue-stripe(onclick="searchMaintenanceActivity('" + maintenanceActivity._id + "')") Ver
                             else
                               label.label-sm.label-default Eliminado
             #maintenanceActivityAttention.tab-pane(role="tabpanel")
               .row.activity-nav-row
                 .col-md-10
-                  .input-group
+                  .input-group.has-clear
                     input.form-control.input-search(type="text", id="maintenanceActivityAttentionSearchInput", placeholder="Buscar atención")
-                    a.fa.fa-search.fa-w-16.fa-3x
+                    span.form-control-clear.fa.fa-times.fa-3.hidden
+                    a.fa.fa-search.fa-w-16.fa-3x(id="maintenanceActivityAttentionSearchButton", data-type="maintenanceActivityAttentions")
                 .col-md-2(style="padding-left:0;")
                   button#manageActivityAttention.btn.btn-primary(type="button", data-toggle="manageActivityModal")
-                      i.fa.fa-plus 
+                      i.fa.fa-plus.noWrap    
                         | Gestionar Atenciones
               .row.activity-nav-row.no-padding
                 .col-md-12
-                  table.table.table-header
+                  table.table.table-header.table-maintenanceActivityAttention
                     thead
                       th #
                       th Actividad
@@ -81,47 +83,74 @@ block content-mpro
                           td=maintenanceActivityAttention.date
                           td
                             a.btn.default.btn-xs.blue-stripe(onclick="searchMaintenanceActivityAttention('" + maintenanceActivityAttention._id + "')") Ver
-                         
   #manageActivityModal.modal.fade(role="dialog")
     .modal-dialog(role="document")
       .modal-content
         .modal-header.bg-primary.text-white
-          h4.modal-title.font-weight-bold Atenciones
+          h4.modal-title.font-weight-bold Actividades y Atenciones
           button.close.fa.fa-close(type="button", style="color:white; opacity:1; text-shadow:1px 1px 1px #ccc; text-indent:0" data-dismiss="modal", aria-label="Close")
         .modal-body
-          form(role="form", id="addMaintenanceActivityAttentionForm", name="addMaintenanceActivityAttentionForm", action="/maintenanceActivityAttentions", method="post")
-            .col-12
-              .form-group.row
-                label.col-3.col-form-label(for="equipmentType") Tipo de Equipo
-                .col-9
-                  select.form-control(id="equipmentType", name="equipmentType", required="true")
-                    option Seleccione
-                    each equipmentType in equipmentTypes
-                      option(value=equipmentType._id) #{equipmentType.name}
-              .form-group.row
-                label.col-3.col-form-label(for="maintenanceActivities") Actividades
-                .col-9
-                  select.form-control(id="maintenanceActivities", name="maintenanceActivities", multiple="true")
-              .form-group.row
-                label.col-3.col-form-label(for="equipment") Equipo
-                .col-9
-                  select.form-control(id="equipment", name="equipment", required="true")
-                    option Seleccione
-                    each equipment in equipments
-                      option(value=equipment._id) #{equipment.name}
-              hr
-              .form-group.row
-                label.col-3.col-form-label(for="dates") Fechas
-                .col-9
-                  .input-group.date
-                    input.form-control(type="text", id="dates", name="dates", readonly="true")
-                    .input-group-addon
-                      span.fa.fa-th
-              input.form-control(type="hidden", name="company", value=currentAccount.company.company._id)
-              input.form-control(type="hidden", name="branchCompany", value=currentAccount.company._id)
-            .col-12(style="text-align:right")
-              button.btn.btn-secondary(type="button", data-dismiss="modal", style="margin-right:1%;") Cerrar
-              button#addMaintenanceActivityAttentionSubmit.btn.btn-primary(type="submit") Crear
+          .row.manageActivityModal-nav-row
+            ul.modal-nav(role="tablist", id="tabManageActivityModal")
+              li.nav-item
+                a.nav-link.active(data-toggle="tab", href="#addMaintenanceActivity", role="tab", aria-controls="addMaintenanceActivity") Agregar Actividades
+              li.nav-item
+                a.nav-link(data-toggle="tab", href="#addMaintenanceActivityAttention", role="tab", aria-controls="addMaintenanceActivityAttention") Agregar Atenciones
+            .tab-content(style="width:100%")
+              #addMaintenanceActivity.tab-pane.active(role="tabpanel")
+                form(role="form", id="addMaintenanceActivityForm", name="addMaintenanceActivityForm", action="/maintenanceActivities", method="post")
+                  .col-12
+                    .form-group.row
+                      label.col-3.col-form-label(for="name") Nombre
+                      .col-9
+                        input.form-control(type="text", id="name", name="name", placeholder="Nombre")
+                    .col-12
+                      button#addMaintenanceActivityName.btn.btn-xs.btn-info.add-activity(type="button", style="cursor:pointer; background-color:rgb(0,155,219)") 
+                        i.fa.fa-plus
+                      button#removeMaintenanceActivityName.btn.btn-xs.btn-info.add-activity(type="button", style="cursor:pointer; background-color:rgb(0,155,219)") 
+                        i.fa.fa-minus
+                    .form-group.row
+                      label.col-3.col-form-label(for="equipmentType") Tipo de Equipo
+                      .col-9
+                        select.form-control(id="equipmentType", name="equipmentType", required="true")
+                          option Seleccione
+                          each equipmentType in equipmentTypes
+                            option(value=equipmentType._id) #{equipmentType.name}
+                    input.form-control(type="hidden", name="company", value=currentAccount.company.company._id)
+                  .col-12(style="text-align:right")
+                    button.btn.btn-secondary(type="button", data-dismiss="modal", style="margin-right:1%;") Cerrar
+                    button#addMaintenanceActivitySubmit.btn.btn-primary(type="submit") Crear
+              #addMaintenanceActivityAttention.tab-pane(role="tabpanel")
+                form(role="form", id="addMaintenanceActivityAttentionForm", name="addMaintenanceActivityAttentionForm", action="/maintenanceActivityAttentions", method="post")
+                  .col-12                    
+                    .form-group.row
+                      label.col-3.col-form-label(for="equipmentType") Tipo de Equipo
+                      .col-9
+                        select.form-control(id="equipmentType", name="equipmentType", required="true")
+                          option Seleccione
+                          each equipmentType in equipmentTypes
+                            option(value=equipmentType._id) #{equipmentType.name}
+                    .form-group.row
+                      label.col-3.col-form-label(for="maintenanceActivities") Actividades
+                      .col-9
+                        select.form-control(id="maintenanceActivities", name="maintenanceActivities", multiple="true")
+                    .form-group.row
+                      label.col-3.col-form-label(for="equipment") Equipo
+                      .col-9
+                        select.form-control(id="equipment", name="equipment", required="true")
+                          option Seleccione
+                    hr
+                    .form-group.row
+                      label.col-3.col-form-label(for="dates") Fechas
+                      .col-9
+                        .input-group.date
+                          input.form-control(type="text", id="dates", name="dates", readonly="true")
+                          .input-group-addon
+                            span.fa.fa-th
+                    input.form-control(type="hidden", name="company", value=currentAccount.company._id)
+                  .col-12(style="text-align:right")
+                    button.btn.btn-secondary(type="button", data-dismiss="modal", style="margin-right:1%;") Cerrar
+                    button#addMaintenanceActivityAttentionSubmit.btn.btn-primary(type="submit") Crear
   #updateMaintenanceActivityModal.modal.fade(role="dialog")
     .modal-dialog(role="document")
       .modal-content

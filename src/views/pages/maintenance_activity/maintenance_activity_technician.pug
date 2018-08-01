@@ -7,16 +7,17 @@ block content-mpro
       .col-md-12
         .row.manageActivity-nav-row.nav-row-padding
           .col-md-10
-            .input-group
+            .input-group.has-clear
               input.form-control.input-search(type="text", id="maintenanceActivityAttentionSearchInput", placeholder="Busar atención")
-              a.fa.fa-search.fa-w-16.fa-3x
+              span.form-control-clear.fa.fa-times.fa-3.hidden
+              a.fa.fa-search.fa-w-16.fa-3x(id="maintenanceActivityAttentionSearchButtom", data-type="maintenanceActivityAttentions")
           .col-md-2(style="padding-left:0;")
             button#manageActivityAttention.btn.btn-primary(type="button", data-toggle="manageActivityModal")
                 i.fa.fa-plus.noWrap
                   | Gestionar Atenciones
         .row
           .col-md-12.no-padding
-            table.table.table-header
+            table.table.table-header.table-maintenanceActivityAttention
               thead
                 th #
                 th Actividad

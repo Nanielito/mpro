@@ -21,12 +21,13 @@ block content-mpro
             #equipment.tab-pane.active(role="tabpanel")
               .row.equipment-nav-row.nav-row-padding
                 .col-md-10
-                  .input-group
-                    input.form-control.input-search(type="text", id="userSearchInput", placeholder="Buscar equipo")
-                    a.fa.fa-search.fa-w-16.fa-3x                
+                  .input-group.has-clear
+                    input.form-control.input-search(type="text", id="equipmentSearchInput", placeholder="Buscar equipo")
+                    span.form-control-clear.fa.fa-times.fa-3.hidden
+                    a.fa.fa-search.fa-w-16.fa-3x(id="equipmentSearchButtom", data-type="equipments")  
               .row.equipment-nav-row.no-padding
                 .col-md-12
-                  table.table.table-header
+                  table.table.table-header.table-equipment
                     thead
                       th #
                       th Nombre

@@ -62,7 +62,11 @@ var sessionHandle = {
                         model:'account',
                         populate:{
                             path:'company',
-                            model:'entity'
+                            model:'entity',
+                            populate:{
+                              path:'company',
+                              model:'entity'
+                            }
                         }
                     })
                     .exec()

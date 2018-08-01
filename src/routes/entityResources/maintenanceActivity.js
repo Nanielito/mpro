@@ -30,7 +30,7 @@ exports.createMaintenanceActivities = function (req, res, next) {
 
           resolve({error: true, message: err.message});
         };
-  
+
         Log.debug({
           parameters: ['MAINTENANCE_ACTIVITY_CREATE_SUCCESS', req.user.name, document.name],
           //text      : 'Success on create! '.concat('User ', req.user.name, ' creates maintenance activity ', document.name),
@@ -164,6 +164,40 @@ exports.getMaintenanceActivitiesByEquipmentType = function (req, res, next) {
     .catch(function (err) {
       reject(err);
     });
+  });
+
+  maintenanceActivitiesPromise
+  .then(function (maintenanceActivities) {
+    res.status(200).send({error: false, data: maintenanceActivities});
+  })
+  .catch(function (err) {
+    res.status(500).send({error: true, message: err.message});
+  });
+};
+
+exports.getMaintenanceActivities = function (req, res, next) {
+
+  var maintenanceActivitiesPromise = new Promise(function (resolve, reject) {
+    var query = {};
+
+    if (typeof req.params.search !== 'undefined' && req.params.search != 'all') {
+      var searchPattern = req.params.search;
+      query = {$or: [{name: new RegExp(searchPattern, 'i')}, {description: new RegExp(searchPattern, 'i')}]};
+    }
+  
+    mongoMaintenanceActivity.find(query)
+    .populate({
+      path:'company',
+      model:'entity',
+      populate:{
+        path:'company',
+        model:'entity'
+      }
+    })
+    .populate('equipmentType')
+    .exec()
+    .then(resolve)
+    .catch(reject);
   });
 
   maintenanceActivitiesPromise

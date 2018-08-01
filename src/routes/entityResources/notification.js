@@ -17,7 +17,7 @@ exports.sendNotifications = function (req, res, next) {
 
       today.setDate(today.getDate()-1)      
 
-      tomorrow.setDate(tomorrow.getDate()+2);
+      tomorrow.setDate(tomorrow.getDate()+30);
       console.log(today)
       console.log(tomorrow)
       var query = {"date":{"$gte":new Date(today), "$lte":new Date(tomorrow)}, "notificationId":null}, 
@@ -71,17 +71,28 @@ exports.sendNotifications = function (req, res, next) {
           .then(function(accounts){
             
             var tempAccountsToNotify = _.reduce(attentions, function(arrEmpty, arr){
+              arr.userAssigned['equipment']=arr.equipment;
+              arr.userAssigned['serviceDate']=arr.date;
               return arrEmpty.concat(arr.userAssigned);  
-            }, [])
+            }, []);
 
             tempAccountsToNotify=[ ...new Set(tempAccountsToNotify)];
-            var arrAccountsToNotify = _.reduce(accounts, function(arrEmpty, arr){
-              return arrEmpty.concat(arr);  
-            }, tempAccountsToNotify);
             
-            arrAccountsToNotify=[ ...new Set(arrAccountsToNotify)];
+            var arrAccountsToNotify;
+
+            _.each(tempAccountsToNotify, function(val, key){
             
-            _.each(arrAccountsToNotify, function(value, key){              
+              arrAccountsToNotify = _.reduce(accounts, function(arrEmpty, arr){                
+                arr['equipment']=val.equipment;
+                arr['serviceDate']=val.serviceDate;
+                return arrEmpty.concat(arr);  
+              }, tempAccountsToNotify);
+
+            });
+              
+            arrAccountsToNotify=[ ...new Set(arrAccountsToNotify)];            
+            
+            _.each(arrAccountsToNotify, function(value, key){        
               notify(value);
             });
 
@@ -96,8 +107,10 @@ exports.sendNotifications = function (req, res, next) {
       
       var result = [], obj = {};
       result = _.reduce(list, function(arrEmpty, val){        
-        var key = "".concat(val.equipment._id,"-",val.date);        
+        var key = "".concat(val.equipment._id,"-",val.date);
+
         if(!obj[key]&&val.checked==false){
+
           obj[key]={ ...{
             equipmentId:val.equipment._id, 
             date:val.date, 
@@ -108,6 +121,7 @@ exports.sendNotifications = function (req, res, next) {
             branchCompanyId:val.equipment.branchCompany._id,
             companyId:val.equipment.branchCompany.company._id
           }};
+
           arrEmpty.push(obj[key]);
         }
         return arrEmpty;
@@ -115,12 +129,12 @@ exports.sendNotifications = function (req, res, next) {
       return result;
     };
 
-    var notify = function(account){      
+    var notify = function(account){
       EmailService.send({
         to: account.email,
         subject: AppMessageProvider.getMessage('NOTIFICATION_SUBJECT'),
         text: AppMessageProvider.getMessage(
-          'NOTIFICATION_EMAIL_TEXT',[account.name, Utils.formatDate(account.date, DATE_FORMAT), account.equipment])
+          'NOTIFICATION_EMAIL_TEXT',[account.name, Utils.formatDate(account.serviceDate, DATE_FORMAT), account.equipment])
       });
 
     };
@@ -144,7 +158,7 @@ exports.sendNotifications = function (req, res, next) {
       });
     };
 
-    var saveNotification = function (notification) {
+    var saveNotification = function (notification){
       var promise = new Promise(function (resolve, reject) {
         var onCreateDocument = function (err, document) {          
           if (err) {
@@ -189,9 +203,9 @@ exports.sendNotifications = function (req, res, next) {
           resolve(data)
         });        
       });
-    }
+    };
   
-    var onFinish = function (data) {
+    var onFinish = function (data){
       res.status(200).send(data);
     };
   

@@ -65,18 +65,18 @@ exports.createEquipmentType = function (req, res, next) {
 /* ########################################################################## */
 
 exports.getEquipmentTypes = function (req, res, next) {
-  if (!req.user || !req.user.username) {
+  /*if (!req.user || !req.user.username) {
     res.status(401).send({error: true, message: 'No user found'});
-  }
+  }*/
 
-  var page = req.params.page || 0;
-  var quantity = req.params.quantity || 0;
+  var page = parseInt(req.params.page) || 0;
+  var quantity = parseInt(req.params.quantity) || 0;
   var query = {};
 
-  if (typeof req.params.search !== 'undefined') {
+  if (typeof req.params.search !== 'undefined' && req.params.search != 'all') {
     var searchPattern = req.params.search;
 
-    query = {$or: [{name: searchPattern}, {description: searchPattern}]};
+    query = {$or: [{name: new RegExp(searchPattern, 'i')}, {description: searchPattern}]};
   }
 
   mongoEquipmentType.find(query).populate('company').skip(page * quantity).limit(page).exec()

@@ -21,7 +21,15 @@ exports.getCompaniesViewData = function (req, res, next) {
     var username = req.user.username;
     var query = {'identifier': identifier, 'role': role, username: username};
   
-    mongoAccount.findOne(query).populate('company').exec()
+    mongoAccount.findOne(query)
+    .populate({
+      path:'company',
+      model:'entity',
+      populate:{
+        path:'company',
+        model:'entity'
+      }
+    }).exec()
     .then(function (user) {
       if (!user || user.length === 0) {
         var message = 'No user found';
@@ -40,7 +48,15 @@ exports.getCompaniesViewData = function (req, res, next) {
     var promise = new Promise(function (resolve, reject) {
       var query = {type: 'branchCompany', company: user.company._id};
 
-      mongoEntity.find(query).exec()
+      mongoEntity.find(query)
+      .populate({
+        path:'company',
+        model:'entity',
+        populate:{
+          path:'company',
+          model:'entity'
+        }
+      }).exec()
       .then(function (branchCompanies) {
         resolve([user, branchCompanies]);
       })

@@ -18,35 +18,40 @@ block content-mpro
               .row.company-nav-row.nav-row-padding
                 .col-md-10
                   .input-group
-                    input.form-control.input-search(type="text", id="branchCompanySearchInput", placeholder="Buscar sucursal")
-                    a.fa.fa-search.fa-w-16.fa-3x
+                    input.form-control.input-search(type="text", id="branchCompanySearchInput", placeholder="Buscar Sucursal")
+                    a.fa.fa-search.fa-w-16.fa-3x(id="entityBranchSearchButtom", data-type="branchCompany")
                 .col-md-2(style="padding-left:0;")
                   button#addBranchCompany.btn.btn-primary.button-search(type="button", data-toggle="addBranchCompanyModal")
                       i.fa.fa-plus.noWrap
                         | Agregar Sucursal
               .row.company-nav-row.no-padding
                 .col-md-12
-                  table.table.table-header
+                  table.table.table-header.table-branchEntity
                     thead
                       th #
                       th Nombre
                       th Email
                       th Contacto
-                      th Ubicación
-                      th
+                      th Ubicacion
+                      th Empresa
+                      th Status
                       th
                     tbody
-                      each branchCompany, i in branchCompanies
+                      each company, i in branchCompanies
                         tr
                           td=i+1
-                          td=branchCompany.name
-                          td=branchCompany.email
-                          td=branchCompany.phone
-                          td=branchCompany.location
+                          td=company.name
+                          td=company.email
+                          td=company.phone
+                          td=company.location
+                          td=company.company.name                          
                           td
-                            a.btn.default.btn-xs.blue-stripe.edit-company(href="/entities/".concat(branchCompany._id)) Editar
+                            if company.status==true
+                              label.label-sm.label-success Activo
+                            else
+                              label.label-sm.label-default Inactivo
                           td
-                            i.fa.fa-trash(aria-hidden="true")
+                            a.btn.default.btn-xs.blue-stripe.edit-company(href="/entities/".concat(company._id)) Editar                          
   #addBranchCompanyModal.modal.fade(rol="dialog")
     .modal-dialog(role="document")
       .modal-content
@@ -100,7 +105,14 @@ block content-mpro
             .form-group.row
               label.col-3.col-form-label(for="location") Ubicacion
               .col-9
-                textarea.form-control(id="location", name="location", wrap="hard")            
+                textarea.form-control(id="location", name="location", wrap="hard")
+            .form-group.row
+              label.col-3.col-form-label(for="status") Estatus
+              .col-9
+                .input-group
+                  span.input-group-addon
+                    input.form-control-custom(type="checkbox", id="status", name="status")
+                  input(type="text", id="statusValue", name="statusValue", disabled="true")           
             .col-12(style="text-align:right")
               button.btn.btn-secondary(type="button", data-dismiss="modal", style="margin-right:1%;") Cerrar
               button.btn.btn-primary.editCompanySubmit(type="submit") Actualizar

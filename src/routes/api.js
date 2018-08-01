@@ -37,7 +37,7 @@ router.post(
 router.get(
   '/accounts/:page-:quantity/:search',
   SessionHandle.isLogged,
-  Account.getAccount);
+  Account.getAccounts);
 
 router.get(
   '/accounts/:account',
@@ -50,9 +50,10 @@ router.get(
   Account.getTechniciansByCompany);
 
 router.get(
-  '/accounts/technicians/branchCompany/:branchCompany', 
-  SessionHandle.isLogged, 
+  '/accounts/technicians/branchCompany/:branchCompany',
+  SessionHandle.isLogged,
   Account.getTechniciansByBranchCompany);
+
 
 router.put(
   '/accounts/:account',
@@ -69,9 +70,8 @@ router.post(
   Entity.createEntity);
 
 router.get(
-  '/entities/:page-:quantity/:type/:search',
-  SessionHandle.isLogged,
-  Entity.getEntity);
+  '/entities/:page/:quantity/:type/:search',  
+  Entity.getEntities);
 
 router.get(
   '/entities/:entity',
@@ -99,7 +99,7 @@ router.post(
   EquipmentType.createEquipmentType);
 
 router.get(
-  '/equipmentTypes/:page-:quantity/:search',
+  '/equipmentTypes/:page/:quantity/:search',
   SessionHandle.isLogged,
   EquipmentType.getEquipmentTypes);
 
@@ -129,7 +129,7 @@ router.post(
   Equipment.createEquipment);
 
 router.get(
-  '/equipments/:page-:quantity/:search',
+  '/equipments/:page/:quantity/:search',
   SessionHandle.isLogged,
   Equipment.getEquipments);
 
@@ -179,6 +179,11 @@ router.put(
   SessionHandle.isLogged,
   MaintenanceActivity.updateMaintenanceActivity);
 
+  
+  router.get(
+    '/maintenanceActivities/:page/:quantity/:search',
+    MaintenanceActivity.getMaintenanceActivities);
+
 
 /* ########################################################################## */
 /* MAINTENANCE ACTIVITY ATTENTION ROUTES                                      */
@@ -204,6 +209,10 @@ router.put(
   SessionHandle.isLogged,
   MaintenanceActivityAttention.updateMaintenanceActivityAttention
 );
+
+router.get(
+  '/maintenanceActivityAttentions/:page/:quantity/:search',
+  MaintenanceActivityAttention.getMaintenanceActivityAttention);
 
 /* ########################################################################## */
 /* NOTIFICATIONS                                                              */

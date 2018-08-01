@@ -13,9 +13,10 @@ block content-mpro
             h4(style="display:inline-block") <b>#{currentAccount.company.name}</b>
         .row.user-nav-row.nav-row-padding
           .col-md-10
-            .input-group
+            .input-group.has-clear
               input.form-control(type="text", id="userSearchInput", placeholder="Buscar usuario")
-              a.fa.fa-search.fa-w-16.fa-3x
+              span.form-control-clear.fa.fa-times.fa-3.hidden
+              a.fa.fa-search.fa-w-16.fa-3x(id="userSearchButtom")
           .col-md-2(style="padding-left:0;")
               button#addAccount.btn.btn-primary.button-search(type="button", data-toggle="addAccountModal")
                   i.fa.fa-plus 
@@ -32,7 +33,6 @@ block content-mpro
                 th.noWrap Fecha de ingreso
                 th Estatus
                 th
-                th 
               each account, i in accounts
                 tbody
                   tr
@@ -48,9 +48,7 @@ block content-mpro
                       else
                         label.label-sm.label-default Inactivo
                     td
-                      a.btn.default.btn-xs.blue-stripe(href="/accounts/" + account.identifier)
-                    td
-                      i.fa.fa-trash(aria-hidden="true")
+                      a.btn.default.btn-xs.blue-stripe(href="/accounts/" + account.identifier)                    
   #addAccountModal.modal.fadde(role="dialog")
     .modal-dialog(role="document")
       .modal-content

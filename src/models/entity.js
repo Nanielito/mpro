@@ -26,6 +26,10 @@ var entity = new Schema(
     },
     date: {
       type: Date
+    },
+    status:{
+      type:Boolean,
+      default:true
     }
   },
   {

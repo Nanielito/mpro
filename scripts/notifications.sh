@@ -4,17 +4,18 @@
 #   Script to handle calls for sending notifications to mpro services.   #
 ##########################################################################
 
-service_name="mpro_notification"
-pid_directory="."
-pid_file="$service_name.pid"
+service_name="mpro_notifications"
+service_directory="./$service_name"
+pid_file="$service_directory/.pid"
 
-log_directory="."
+log_directory="$service_directory/logs"
 log_file="$log_directory/$service_name.log"
 
 # services is going to exec by 30 second
 interval_time=60
 log_max_size=1024
 pid=`echo $$`
+last_pid=""
 
 host=""
 port=""
@@ -41,8 +42,8 @@ setUpEnvironment() {
     last_pid=`cat $pid_file`
   fi
 
-  if [ ! -d "$pid_directory" ]; then
-    mkdir "$pid_directory" 
+  if [ ! -d "$service_directory" ]; then
+    mkdir "$service_directory" 
   fi
 
   if [ ! -d "$log_directory" ]; then
@@ -102,7 +103,7 @@ start() {
   fi
 
   echo "We are going to star this services"
-  echo "$pid" > "pid_file"
+  echo "$pid" > "$pid_file"
 
   log "start service $service_name -> `date +"%Y-%m-%d %H:%M:%S" `" 
 

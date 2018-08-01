@@ -41,6 +41,4 @@ jsconfig.json
 docker/**/
 
 # Notifications
-pid_file
-mpro_notification.log
-mpro_notification.log.old
+mpro_notifications/

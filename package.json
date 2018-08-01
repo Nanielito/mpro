@@ -4,11 +4,11 @@
   "private": true,
   "description": "MPRO Core App",
   "scripts": {
-    "start": "node src/bin/www; npm run notifications:start",
-    "start:dev": "nodemon src/bin/www; npm run notifications:start",
-    "pm2:start": "pm2 start src/bin/www; npm run notifications:start",
+    "start": "npm run notifications:start; node src/bin/www",
+    "start:dev": "npm run notifications:start; nodemon src/bin/www",
+    "pm2:start": "npm run notifications:start; pm2 start src/bin/www",
     "pm2:restart": "pm2 restart $(pm2 id www | grep -oP [0-9]+)",
-    "pm2:stop": "pm2 stop $(pm2 id www | grep -oP [0-9]+); npm run notifications:stop",
+    "pm2:stop": "npm run notifications:stop; pm2 stop $(pm2 id www | grep -oP [0-9]+)",
     "pm2:remove": "pm2 delete $(pm2 id www | grep -oP [0-9]+)",
     "pm2:ls": "pm2 ls",
     "notifications:start": "bash scripts/notifications.sh start > /dev/null 2>/dev/null &",
@@ -23,7 +23,6 @@
     "postbuild": "node scripts/restore-pkg"
   },
   "dependencies": {
-    "@sendgrid/mail": "^6.2.1",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.17.1",
     "cookie-parser": "~1.4.3",

@@ -139,7 +139,7 @@ module.exports = function (passport) {
         newUser.email = req.body.email;
         newUser.role = req.body.role;
         newUser.image = req.body.image;
-        console.log(newUser)
+        
         newUser.save(function (err) {
           if (err) {
             res.json({'response': ''.concat('Error al salvar! ', err)});

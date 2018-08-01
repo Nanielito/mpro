@@ -5,6 +5,7 @@ var EmailService = require('../../libs/emailServices');
 var AppMessageProvider = require('../../libs/appMessageProvider');
 var LogMessageProvider = require('../../libs/logMessageProvider');
 var Utils = require('../../libs/utils');
+var _ = require('underscore');
 
 var mongoAccount = Mongoose.model('account');
 
@@ -49,7 +50,8 @@ exports.createAccount = function (req, res, next) {
           user      : req.user._id,
           model     : JSON.stringify(document)
         });
-        EmailService.send({
+        
+        var emailContent={
           to: account.username,
           subject: AppMessageProvider.getMessage('ACCOUNT_CREATION_EMAIL_SUBJECT'),
           text: AppMessageProvider.getMessage(
@@ -60,7 +62,9 @@ exports.createAccount = function (req, res, next) {
               'mpro-'.concat(account.email.split('@')[0]),
               'http://138.68.246.213:3000'
             ])
-        });
+        }
+        
+        EmailService.send(emailContent);
 
         resolve({error: false, data: document});
       }
@@ -87,31 +91,53 @@ exports.createAccount = function (req, res, next) {
 /* ########################################################################## */
 
 exports.getAccounts = function (req, res, next) {
-  if (!req.user || !req.user.username) {
-    res.status(401).send({error: true, message: 'No user found'});
-  }
-
-  var page = req.params.page || 0;
-  var quantity = req.params.quantity || 0;
-  var query = {};
+  //if (!req.user || !req.user.username) {
+  //  res.status(401).send({error: true, message: 'No user found'});
+  //}
+  console.log(req.user)
+  var page = parseInt(req.params.page) || 0;
+  var quantity = parseInt(req.params.quantity) || 0;
+  var query = {role: {$nin:['admin']}};
   var projection = {username: 0, password: 0};
 
-  if (typeof req.params.search !== 'undefined') {
-    var searchPattern = req.params.search;
-
-    query = {$or: [{name: searchPattern}, {'company.name': searchPattern}, {role: searchPattern}]};
+  if(req.user.role=='adminBranchCompany'){
+    query['company'] = Mongoose.Types.ObjectId(req.user.company._id);
   }
-
+  
+  if (typeof req.params.search !== 'undefined' && req.params.search != 'all') {
+    var searchPattern = req.params.search;
+    //query['$or']=[{name: new RegExp(searchPattern, 'i')}, {'company.name': searchPattern}, {role: searchPattern}];
+    query = {$or: [{name: new RegExp(searchPattern, 'i')}, {'company.name': searchPattern}, {role: searchPattern}]};
+  }
+  console.log(query)
   mongoAccount
   .find(query, projection)
-  .populate('company')
+  .populate({
+    path:'company',
+    model:'entity',
+    populate:{
+      path:'company',
+      model:'entity'
+    }
+  })
   .skip(page * quantity)
-  .limit(page)  
+  .limit(page)
+  .lean()
   .exec()
   .then(function (accounts) {
-    res.status(200).send({error: false, data: accounts});
+    var result = [], obj = {};
+    _.each(accounts, function(val, key){
+      obj = Object.assign({}, val);
+      obj.date=Utils.formatDate(val.date.toString(), "DD/MM/YY");      
+      result.push(obj);
+    });
+    res.render('partials/accounts-table-body', {
+      error:false,
+      data: result
+    }); 
   })
   .catch(function (err) {
+    console.log(err)
     res.status(500).send({error: true, message: 'Unexpected error was occurred'});
   });
 };
@@ -141,7 +167,7 @@ exports.getAccount = function (req, res, next) {
   });
 };
 
-exports.getTechniciansByCompany = function (req, res, next) {
+exports.getTechniciansByCompany = function (req, res, next) {  
   var branchCompaniesPromise = new Promise(function (resolve, reject) {
     var query = {type: 'branchCompany', company: req.params.company};
 
@@ -187,10 +213,11 @@ exports.getTechniciansByCompany = function (req, res, next) {
 };
 
 exports.getTechniciansByBranchCompany = function (req, res, next) {
+
   var accountsPromise = new Promise(function (resolve, reject) {
     var query = {role: 'technician', company: req.params.branchCompany};
     var projection = {_id: 1, name: 1};
-
+    
     mongoAccount.find(query, projection).exec()
     .then(function (accounts) {
       resolve(accounts);
@@ -243,9 +270,9 @@ exports.updateAccount = function (req, res, next) {
   }
 
   if (typeof req.body.branchCompany !== 'undefined') {
-    setValues.branchCompany = req.body.branchCompany;
+    setValues.company = req.body.branchCompany;
   }
-
+  
   var onUpdateDocument = function (err, document) {
     
     if (err) {

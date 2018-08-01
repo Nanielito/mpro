@@ -1,0 +1,14 @@
+each company, i in entities
+    tr
+        td=i+1
+        td=company.name
+        td=company.email
+        td=company.phone
+        td=company.location
+        td
+            if company.status==true
+                label.label-sm.label-success Activo
+            else
+                label.label-sm.label-default Inactivo
+        td
+            a.btn.default.btn-xs.blue-stripe.edit-company(href="/entities/".concat(company._id)) Edit

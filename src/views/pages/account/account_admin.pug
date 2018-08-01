@@ -7,9 +7,10 @@ block content-mpro
       .col-md-12
         .row.activity-nav-row
           .col-md-10
-            .input-group
+            .input-group.has-clear
               input.form-control.input-search(type="text", id="userSearchInput", placeholder="Usuario...")
-              a.fa.fa-search.fa-w-16.fa-3x
+              span.form-control-clear.fa.fa-times.fa-3.hidden
+              a.fa.fa-search.fa-w-16.fa-3x(id="userSearchButtom")
           .col-md-2(style="padding-left:0;")
               button#addAccount.btn.btn-primary.button-search(type="button", data-toggle="addAccountModal")
                   i.fa.fa-plus 
@@ -27,7 +28,6 @@ block content-mpro
                 th Sucursal
                 th.noWrap Fecha de ingreso
                 th Estatus
-                th
                 th
               tbody 
                 each account, i in accounts
@@ -53,9 +53,7 @@ block content-mpro
                       else
                         label.label-sm.label-default Inactivo
                     td
-                      a.btn.default.btn-xs.blue-stripe(href="/accounts", name="editAccount", data-toggle="editAccountModal", data-id=account._id) Editar
-                    td
-                      i.fa.fa-trash(aria-hidden="true")
+                      a.btn.default.btn-xs.blue-stripe(href="/accounts", name="editAccount", data-toggle="editAccountModal", data-id=account._id) Editar                    
   #addAccountModal.modal.fadde(role="dialog")
     .modal-dialog(role="document")
       .modal-content

@@ -366,7 +366,7 @@ input{
 .table tbody td{
 	vertical-align: middle;
 	color:rgb(140,140,140);
-	text-transform: capitalize;
+	/*text-transform: capitalize;*/
 }
 
 .table tbody td:first-child{
@@ -513,3 +513,26 @@ button.add-activity:hover{
 body .notifyjs-wrapper{
 	z-index: 2 !important;
 }
+
+.searchclear{
+	position: absolute;
+	right: 5px;
+	top: 0;
+	bottom: 0;
+	height: 14px;
+	margin: auto;
+	font-size: 14px;
+	color: #ccc
+}
+
+.form-control-clear {
+	z-index: 10;
+    cursor: pointer;
+    position: relative;
+    right: 2%;
+    top: 25px;
+  }
+
+  .hidden{
+	  display:none;
+  }

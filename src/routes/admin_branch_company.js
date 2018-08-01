@@ -75,7 +75,7 @@ router.get('/adminBranchCompany', SessionHandle.isLogged, function (req, res, ne
 
   var onFetchActivities = function (user) {
     var promise = new Promise(function (resolve, reject) {
-      Log.getLogs(10,0).onFetchByRole(user)
+      Log.getLogs(1000,0).onFetchByRole(user)
       .then(function (data) {
         resolve({user: user, activities: data});
       })
@@ -90,7 +90,7 @@ router.get('/adminBranchCompany', SessionHandle.isLogged, function (req, res, ne
   var onRender = function (data) {
     var tempUser = req.user || {};
     req.user = {};
-
+    console.log(tempUser)
     return res.render('pages/dashboard/dashboard_admin_branch_company', {
       user: tempUser,
       currentAccount: data.user,
