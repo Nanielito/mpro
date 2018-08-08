@@ -140,12 +140,15 @@ function searchNextMaintenanceActivityAttention(identifier) {
       $('#updateMaintenanceActivityAttentionGroup span#inProgress').show();
       $('#updateMaintenanceActivityAttentionGroup button#finishAttentionSubmit').show();
       $('#updateMaintenanceActivityAttention button#updateMaintenanceActivityAttentionSubmit').show();
+      $('#updateMaintenanceActivityAttention div#commentRow').show();
     }
     else if (response.data.started === false) {
       $('#updateMaintenanceActivityAttentionGroup span#toAttend').show();
     }
     else if (response.data.finished === true) {
       $('#updateMaintenanceActivityAttentionGroup span#finished').show();
+      $('#updateMaintenanceActivityAttention div#commentRow').show();
+      $('#updateMaintenanceActivityAttention textarea#comment').attr('disabled', true);
     }
 
     $('#updateMaintenanceActivityAttention .form-group').remove();
@@ -340,19 +343,24 @@ $(document).ready(function () {
 
     _.each(form, function (item, i) {
       var control = $(item);
-      if(control.attr("class")==undefined) return;
+      
+      if (typeof control.attr("class") === 'undefined') {
+        return;
+      }
+
       if ((control.attr('class')).indexOf('form-control') > -1 || control.attr('type') === 'hidden') {
         if (control.prop('tagName').toLowerCase() === 'input' || control.prop('tagName').toLowerCase() === 'textarea') {
           if (control.val().trim().length > 0) {
-            if(item.getAttribute("type")=="email"){
-              if(!(/^[a-zA-Z0-9_-]+\@[a-zA-Z0-9]+\.[a-zA-Z0-9-]{0,5}$/ig).exec(item.value)){
+            if (item.getAttribute("type")=="email"){
+              if (!(/^[a-zA-Z0-9_-]+\@[a-zA-Z0-9]+\.[a-zA-Z0-9-]{0,5}$/ig).exec(item.value)) {
                 $(item).after('<p style="color:red;" name="description">Correo invalido</p>');
                 return;
               }
             }
-            if(item.getAttribute("type")=="phone"){              
-              if(!(/^[0-9]+$/ig).exec(item.value)){
-                $(item).after('<p style="color:red;" name="description">Cmapo debe ser numérico</p>');
+
+            if (item.getAttribute("type")=="phone") {              
+              if (!(/^[0-9]+$/ig).exec(item.value)) {
+                $(item).after('<p style="color:red;" name="description">Campo debe ser numérico</p>');
                 return;
               }
             }
@@ -365,7 +373,7 @@ $(document).ready(function () {
         else if (control.prop('tagName').toLowerCase() === 'select') {
           var itemValue = control.find('option:selected').attr('value');							
 
-          if (itemValue !== undefined) {
+          if (typeof itemValue !== 'undefined') {
             data[control.attr('name')] = itemValue;
           }
           else {
@@ -457,6 +465,7 @@ $(document).ready(function () {
         $('#updateMaintenanceActivityAttentionGroup span#inProgress').show();
         $('#updateMaintenanceActivityAttention button#updateMaintenanceActivityAttentionSubmit').show();
         $('#updateMaintenanceActivityAttention .form-group input[type=checkbox]').attr('disabled', false);
+        $('#updateMaintenanceActivityAttention div#commentRow').show();
       }
       else if (typeof data.finished !== 'undefined') {
         $('#updateMaintenanceActivityAttentionGroup button#finishAttentionSubmit').hide();
