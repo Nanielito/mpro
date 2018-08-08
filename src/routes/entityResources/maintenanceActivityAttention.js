@@ -304,6 +304,7 @@ exports.getNextMaintenanceActivityAttention = function (req, res, next) {
           result['started'] = maintenanceActivityDate.started,
           result['finished'] = maintenanceActivityDate.finished;
           result['maintenanceActivityDate'] = maintenanceActivityDate._id;
+          result['comment'] = maintenanceActivityDate.comment;
           result['date'] = Utils.formatDate(maintenanceActivityDate.date, DATE_FORMAT);
           result['maintenanceActivityAttentions'] = maintenanceActivityAttentions;
           
