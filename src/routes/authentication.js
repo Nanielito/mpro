@@ -56,7 +56,11 @@ module.exports = function (passport) {
           model     : JSON.stringify(data[1])
         })
         .then(function (data) {
-          return res.redirect('/'.concat(account.role));
+          console.log(account.role);
+          if(account.role=='technician'||account.role=='adminBranchCompany')
+            return res.redirect('/'.concat(account.role));
+          else
+          return res.redirect('/'.concat(account.role, '/companies'));
         });     
       })
       .catch(function (err) {

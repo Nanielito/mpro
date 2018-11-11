@@ -23,23 +23,23 @@ block content-mpro
               .equipment-menu
                 ul.nav
                   li
-                    a(href='#')
+                    a(href="/"+user.role)
                       i.icon-home
                       | Inicio
                   li
-                    a(href="/" + user.role + "/" + user.identifier + "/activities")
+                    a(href="/" + user.role + "/activities")
                       i.icon-settings
                       | Actividades
                   li
-                    a(href="/" + user.role + "/" + user.identifier + "/companies")
+                    a(href="/" + user.role + "/companies")
                       i.icon-check
                       | Empresas
                   li
-                    a(href="/" + user.role + "/" + user.identifier + "/users")
+                    a(href="/" + user.role + "/users")
                       i.icon-check
                       | Usuarios
                   li
-                    a(href="/" + user.role + "/" + user.identifier + "/equipments")
+                    a(href="/" + user.role + "/equipments")
                       i.icon-check
                       | Equipos
           .col-md-8

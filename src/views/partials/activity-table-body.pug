@@ -1,0 +1,22 @@
+each maintenanceActivity, i in maintenanceActivities
+    tr(class=maintenanceActivity.deleted === true ? "item-deleted" : "")
+        td=i + 1
+        td=maintenanceActivity.name
+        if(user.role=='admin')
+            td=maintenanceActivity.company.name
+        td=maintenanceActivity.equipmentType.name
+        td
+            if maintenanceActivity.status == true
+                label.label-sm.label-success Activo
+            else
+                label.label-sm.label-default Inactivo
+        td
+            if maintenanceActivity.deleted == false
+                a.btn.default.btn-xs.blue-stripe(onclick="searchMaintenanceActivity('" + maintenanceActivity._id + "')") Editar
+            else
+                label.label-sm.label-default Eliminado
+        td
+            if maintenanceActivity.deleted == false
+                i.fa.fa-trash(onclick="deleteMaintenanceActivity('" + maintenanceActivity._id + "')", aria-hidden="true")
+            else
+                i.fa.fa-undo(onclick="restoreMaintenanceActivity('" + maintenanceActivity._id + "')", aria-hidden="true")

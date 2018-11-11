@@ -2,7 +2,7 @@ var Mongoose = require('mongoose');
 var Functional = require('underscore');
 
 var Log = require('../../libs/log');
-
+var mongoEquipmentType = Mongoose.model('equipmentType');
 var mongoMaintenanceActivity = Mongoose.model('maintenanceActivity');
 
 /* ########################################################################## */
@@ -175,39 +175,75 @@ exports.getMaintenanceActivitiesByEquipmentType = function (req, res, next) {
   });
 };
 
-exports.getMaintenanceActivities = function (req, res, next) {
+exports.getMaintenanceActivities = function (req, res, next){
 
-  var maintenanceActivitiesPromise = new Promise(function (resolve, reject) {
-    var query = {};
+  var onFetchEquipmentTypes = function (user) {
+    var promise = new Promise(function (resolve, reject) {
+      var query;
+      if(user.company==undefined)
+        query = {}
+      else
+        query = {company: user.company._id };
 
-    if (typeof req.params.search !== 'undefined' && req.params.search != 'all') {
-      var searchPattern = req.params.search;
-      query = {$or: [{name: new RegExp(searchPattern, 'i')}, {description: new RegExp(searchPattern, 'i')}]};
-    }
-  
-    mongoMaintenanceActivity.find(query)
-    .populate({
-      path:'company',
-      model:'entity',
-      populate:{
-        path:'company',
-        model:'entity'
+      mongoEquipmentType.find(query).exec()
+      .then(function (equipmentTypes) {
+        resolve([user, equipmentTypes]);
+      })
+      .catch(function (err) {
+        reject(err);
+      });
+    });
+
+    return promise;
+  };
+
+  var onFetchMaintenanceActivities = function (data) {
+    var promise = new Promise(function (resolve, reject) {
+      var query, expression;
+      if(data[0].role=='admin'){
+        query={};
       }
-    })
-    .populate('equipmentType')
-    .exec()
-    .then(resolve)
-    .catch(reject);
-  });
+      else{
+        query = {company: data[0].company.company != undefined ? data[0].company.company._id : data[0].company._id};
+      }
+      if (typeof req.params.search !== 'undefined' && req.params.search != 'all') {
+        var searchPattern = req.params.search;
+      }
+      
+      mongoMaintenanceActivity.find(query)
+      .populate('company')
+      .populate('equipmentType').exec()
+      .then(function (maintenanceActivitiesResult) {
+        var maintenanceActivities=[];
+        Functional.each(maintenanceActivitiesResult, function(currentvalue){          
+          expression=new RegExp(searchPattern, 'i');
+          if(expression.exec(currentvalue.name)!=null){            
+            maintenanceActivities.push(currentvalue);
+          }
+        });
+        
+        data.push(maintenanceActivities);
+        resolve(data);
+      })
+      .catch(function (err) {
+        reject(err);
+      });
+    });
 
-  maintenanceActivitiesPromise
-  .then(function (maintenanceActivities) {
-    res.status(200).send({error: false, data: maintenanceActivities});
-  })
-  .catch(function (err) {
-    res.status(500).send({error: true, message: err.message});
+    return promise;
+  };
+
+  onFetchEquipmentTypes(req.user)
+  .then(onFetchMaintenanceActivities)
+  .then(function(data){ 
+    res.render('partials/activity-table-body', {
+      error:false,
+      user:req.user,
+      maintenanceActivities: data[2]
+    }); 
   });
 };
+
 
 /* ########################################################################## */
 /* UPDATE RESOURCES                                                           */

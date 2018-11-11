@@ -5,6 +5,11 @@ block content-mpro
   .container-fluid
     .row
       .col-md-12
+        .row.information-company
+          .col-md-12
+            h4(style="display:inline-block") <b>#{currentAccount.company.company.name}</b>
+            span  : 
+            h4(style="display:inline-block") <b>#{currentAccount.company.name}</b>
         .row.manageActivity-nav-row
           ul.page-nav(role="tablist", id="tabManageActivity")
             li.nav-item
@@ -13,16 +18,16 @@ block content-mpro
               a.nav-link(data-toggle="tab", href="#maintenanceActivityAttention", role="tab", aria-controls="maintenanceActivityAttention") Atenciones
           .tab-content(style="width:100%")
             #maintenanceActivity.tab-pane.active(role="tabpanel")
-              .row.activity-nav-row
-                .col-md-10
+              .row.activity-nav-row.nav-row-padding.searchBar
+                .col-md-11
                   .input-group.has-clear
-                    input.form-control.input-search(type="text", id="maintenanceActivitySearchInput", placeholder="Buscar Actividad")
+                    input.form-control.input-search.search-box(type="text", id="maintenanceActivitySearchInput", placeholder="Buscar Actividad")                    
                     span.form-control-clear.fa.fa-times.fa-3.hidden
-                    a.fa.fa-search.fa-w-16.fa-3x(id="maintenanceActivitySearchButtom", data-type="maintenanceActivities")
-                .col-md-2(style="padding-left:0;")
+                    a.fa.fa-search.fa-w-16.fa-3x(id="maintenanceActivityAttentionSearchButton", data-type="maintenanceActivityAttentions", data-content=user.session_id)
+                .col-md-1(style="padding-left:0;")
                   button#manageActivity.btn.btn-primary(type="button", data-toggle="manageActivityModal")
-                      i.fa.fa-plus 
-                        | Gestionar Actividades
+                      i.fa.fa-plus.noWrap 
+                        |  Agregar
               .row.activity-nav-row.no-padding
                 .col-md-12
                   table.table.table-header.table-maintenanceActivity
@@ -45,20 +50,21 @@ block content-mpro
                               label.label-sm.label-default Inactivo
                           td
                             if maintenanceActivity.deleted == false
-                              a.btn.default.btn-xs.blue-stripe(onclick="searchMaintenanceActivity('" + maintenanceActivity._id + "')") Ver
+                              a.btn.default.btn-xs.blue-stripe(onclick="searchMaintenanceActivity('" + maintenanceActivity._id + "')")
+                                i.fa.fa-search(aria-hidden="true")
                             else
                               label.label-sm.label-default Eliminado
             #maintenanceActivityAttention.tab-pane(role="tabpanel")
-              .row.activity-nav-row
-                .col-md-10
+              .row.activity-nav-row.nav-row-padding.searchBar
+                .col-md-11
                   .input-group.has-clear
-                    input.form-control.input-search(type="text", id="maintenanceActivityAttentionSearchInput", placeholder="Buscar atención")
+                    input.form-control.input-search.search-box(type="text", id="maintenanceActivityAttentionSearchInput", placeholder="Buscar atención")
                     span.form-control-clear.fa.fa-times.fa-3.hidden
                     a.fa.fa-search.fa-w-16.fa-3x(id="maintenanceActivityAttentionSearchButton", data-type="maintenanceActivityAttentions")
-                .col-md-2(style="padding-left:0;")
+                .col-md-1(style="padding-left:0;")
                   button#manageActivityAttention.btn.btn-primary(type="button", data-toggle="manageActivityModal")
-                      i.fa.fa-plus.noWrap    
-                        | Gestionar Atenciones
+                    i.fa.fa-plus.noWrap    
+                      |  Agregar
               .row.activity-nav-row.no-padding
                 .col-md-12
                   table.table.table-header.table-maintenanceActivityAttention

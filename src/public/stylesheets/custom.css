@@ -8,7 +8,7 @@ body{
 	/*https://developer.mozilla.org/es/docs/Web/CSS/hyphens*/
 	hyphens: auto;
 	letter-spacing: 0em;
-	font-size: large;
+	font-size: small;
 }
 
 a{
@@ -58,7 +58,7 @@ li{
 
 select.form-control{
 	background: transparent;
-	height: 70px!important;
+	height: 50px!important;
 	color:rgb(209,209,209);
 	appearance:none;
 	font-weight: bold;
@@ -110,11 +110,7 @@ ul{
 	background-color: white;
 }
 
-input{
-	height: 70px;
-}
-
-.dropdown{
+.dropdown {
 	position: relative;
 }
 
@@ -149,7 +145,7 @@ input{
 	margin-right: auto!important;
 	display: flex;
 	list-style: none;;
-	height: 100%;
+	height: 80%;
   }
 
   .top-nav-item{
@@ -220,14 +216,10 @@ input{
 
   .nav-link{
 	  width: 250px;
-	  height: 80px;
+	  height: 60px;
 	  padding-top:10%;
 	  font-weight: bold;
 	  text-transform: uppercase;
-  }
-
-  .activity-nav-row{
-	padding: 1% 1.5%;
   }
 
   .vertical-middle{
@@ -265,31 +257,35 @@ input{
 	  white-space: nowrap;
   }
 
-  .avatar {
-	margin: 0em 0.1em 0.9em 0.8em;
-	width: 7%;
-	position: relative;
-	-webkit-border-radius: 50%;
-	-moz-border-radius: 50%;
-	border-radius: 50%;
-	-webkit-box-shadow: 0 0 0 3px #fff, 0 0 0 3px #999, 0 1px 2px 1px rgba(0,0,0,.2);
-	-moz-box-shadow: 0 0 0 3px #fff, 0 0 0 3px #999, 0 1px 2px 1px rgba(0,0,0,.2);
-	box-shadow: 0 0 0 3px #fff, 0 0 0 3px #999, 0 1px 2px 1px rgba(0,0,0,.2);
-  }
+.avatar {
+  margin: 0em 0.1em 0.9em 0.8em;
+  width: 4%;
+  position: relative;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  -webkit-box-shadow: 0 0 0 3px #fff, 0 0 0 3px #999, 0 1px 2px 1px rgba(0,0,0,.2);
+  -moz-box-shadow: 0 0 0 3px #fff, 0 0 0 3px #999, 0 1px 2px 1px rgba(0,0,0,.2);
+  box-shadow: 0 0 0 3px #fff, 0 0 0 3px #999, 0 1px 2px 1px rgba(0,0,0,.2);
+}
 
-  .input-search::placeholder{
+.input-search {
+	height: 40px;
+}
+
+.input-search::placeholder {
 	text-align: center;
-  }
+}
 
-  .fa-search{
-	  color:#eaeaea!important;
-	  padding-left: 0.5%;
-  }
+.searchBar .fa-search {
+	color:#eaeaea!important;
+	padding-left: 0.5%;
+}
   
  ::placeholder{
 	text-transform: uppercase !important;	
 	color:#CFCFCF !important;
-	font-size: large;
+	font-size: small;
 	font-weight: bold;
  }
 
@@ -312,7 +308,7 @@ input{
 	cursor:pointer; 
 	background-color:rgb(0,155,219);
 	white-space: nowrap;
-	height: 70px;
+	height: 20px;
  }
 
  .button-search i{
@@ -323,7 +319,7 @@ input{
 	cursor:pointer; 
 	background-color:rgb(0,155,219);
 	white-space: nowrap;
-	height: 70px;
+	height: 40px!important;
  }
 
  .btn-primary i{
@@ -338,7 +334,7 @@ input{
 
  .table-header thead{
 	background-color: rgb(245,245,245);
-	height: 70px;
+	height: 40px;
  }
 
  .table-header thead th{
@@ -373,44 +369,49 @@ input{
 	text-align: center;
 }
 
-.noWrap{
-	white-space:nowrap;
+.noWrap {
+  white-space: nowrap;
 }
 
-.modal-header{
-	background-color: rgb(51,51,53)!important;	
+.modal-header {
+  background-color: rgb(51,51,53)!important;	
 }
 
-.modal-title{
-	margin:0 auto;
-	color:rgb(158,156,159);
+.modal-title {
+  margin:0 auto;
+  color:rgb(158,156,159);
 }
 
 button.close{
-	display:none;
+  display:none;
 }
 
-.modal-body .col-form-label{
-	vertical-align: middle;
-	padding-top: 5%;
-	color:rgb(196,196,196);
-	font-size: small;
-	font-weight: bold;
-	text-transform: uppercase;
+.modal-body .col-form-label {
+  vertical-align: middle;
+  padding-top: 5%;
+  color:rgb(196,196,196);
+  font-size: small;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
-.modal-body button{
-	width: 45%;
-	height: 70px;
-	color:white;
-	text-transform:uppercase;
+.modal-body button {
+  width: 45%;
+  height: 40px;
+  color:white;
+  text-transform:uppercase;
+}
+
+.modal-body input {
+  height: 50px;
 }
 
 .modal-body button.btn-secondary{
 	background-color: rgb(121,121,121);
+	height: 40px!important;
 }
 
-.modal-body  .col-12{
+.modal-body .col-12{
 	text-align: center!important;
 }
 
@@ -422,8 +423,12 @@ ul.modal-nav{
 	padding-bottom: 20px;
 }
 
-.modal-nav .nav-item{
-	white-space: nowrap;	
+.modal-nav .nav-item {
+	white-space: nowrap!important;	
+}
+
+.nav-item, table th, table tbody td a {
+	white-space: nowrap!important;	
 }
 
 .modal-nav a{
@@ -530,7 +535,7 @@ body .notifyjs-wrapper{
     cursor: pointer;
     position: relative;
     right: 2%;
-    top: 25px;
+    top: 13px;
   }
 
   .hidden{

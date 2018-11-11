@@ -7,24 +7,21 @@ block content-mpro
       .col-md-12
         .row.information-company
           .col-md-12
-            span Empresa a la que colabora 
             h4(style="display:inline-block") <b>#{currentAccount.company.company.name}</b>
-            span  Sucursal 
+            span  : 
             h4(style="display:inline-block") <b>#{currentAccount.company.name}</b>
-          .col-md-12
-            p 
         .row.equipment-nav-row.container-fluid
           ul.page-nav(role="tablist", id="tabEquipment")
             li.nav-item
               a.nav-link.nav-item-active(data-toggle="tab", href="#equipment", role="tab", aria-controls="equipment") Equipos
           .tab-content(style="width:100%")
             #equipment.tab-pane.active(role="tabpanel")
-              .row.equipment-nav-row.nav-row-padding
-                .col-md-10
+              .row.equipment-nav-row.nav-row-padding.searchBar
+                .col-md-12
                   .input-group.has-clear
-                    input.form-control.input-search(type="text", id="equipmentSearchInput", placeholder="Buscar equipo")
+                    input.form-control.input-search.search-box(type="text", id="equipmentSearchInput", placeholder="Buscar equipo")
                     span.form-control-clear.fa.fa-times.fa-3.hidden
-                    a.fa.fa-search.fa-w-16.fa-3x(id="equipmentSearchButtom", data-type="equipments")  
+                    a.fa.fa-search.fa-w-16.fa-3x(id="equipmentSearchButton", data-type="equipments")  
               .row.equipment-nav-row.no-padding
                 .col-md-12
                   table.table.table-header.table-equipment
@@ -34,6 +31,7 @@ block content-mpro
                       th Código
                       th Ubicación
                       th Tipo
+                      th
                       th
                       th
                     tbody
@@ -46,8 +44,10 @@ block content-mpro
                           td=equipment.equipmentType.name
                           td
                             a.btn.default.btn-xs.blue-stripe(href="/home/equipments/" + equipment._id)
+                              i.fa.fa-search(aria-search="true")
                           td
-                            a.btn.default.btn-xs.blue-stripe(onclick="searchNextMaintenanceActivityAttention('" + equipment._id + "')") Atención
+                            a.btn.default.btn-xs.blue-stripe(onclick="searchNextMaintenanceActivityAttention('" + equipment._id + "')")
+                              i.fa.fa-calendar-check-o(aria-search="true")
                           td
                             i.fa.fa-trash(aria-hidden="true")
   

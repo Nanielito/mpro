@@ -23,8 +23,7 @@ module.exports = function (passport) {
 	});
 
 	passport.deserializeUser(function (id, done) {
-		mongoAccount.findById(id, function(err, doc) {
-			//console.log('deserialize User: ' + doc );
+		mongoAccount.findById(id, function(err, doc) {			
 			return done(err, doc);
 		});
 	});

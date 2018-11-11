@@ -5,40 +5,51 @@ block content-mpro
   .container-fluid
     .row
       .col-md-12
-        .row.manageActivity-nav-row.nav-row-padding
-          .col-md-10
-            .input-group.has-clear
-              input.form-control.input-search(type="text", id="maintenanceActivityAttentionSearchInput", placeholder="Busar atención")
-              span.form-control-clear.fa.fa-times.fa-3.hidden
-              a.fa.fa-search.fa-w-16.fa-3x(id="maintenanceActivityAttentionSearchButtom", data-type="maintenanceActivityAttentions")
-          .col-md-2(style="padding-left:0;")
-            button#manageActivityAttention.btn.btn-primary(type="button", data-toggle="manageActivityModal")
-                i.fa.fa-plus.noWrap
-                  | Gestionar Atenciones
-        .row
-          .col-md-12.no-padding
-            table.table.table-header.table-maintenanceActivityAttention
-              thead
-                th #
-                th Actividad
-                th Equipo
-                th Estatus
-                th Fecha
-                th
-              tbody
-                each maintenanceActivityAttention, i in maintenanceActivityAttentions
-                  tr
-                    td=i + 1
-                    td=maintenanceActivityAttention.maintenanceActivity.name
-                    td=maintenanceActivityAttention.equipment.name
-                    td
-                      if maintenanceActivityAttention.checked == true
-                        label.label-sm.label-success Revisada
-                      else
-                        label.label-sm.label-default Por Revisar
-                    td=maintenanceActivityAttention.date
-                    td
-                      a.btn.default.btn-xs.blue-stripe(onclick="searchMaintenanceActivityAttention('" + maintenanceActivityAttention._id + "')") Ver
+        .row.information-company
+          .col-md-12
+            h4(style="display:inline-block") <b>#{currentAccount.company.company.name}</b>
+            span  : 
+            h4(style="display:inline-block") <b>#{currentAccount.company.name}</b>
+        .row.manageActivity-nav-row
+          ul.page-nav(role="tablist", id="tabManageActivity")
+            li.nav-item
+              a.nav-link.nav-item-active(data-toggle="tab", href="#maintenanceActivityAttention", role="tab", aria-controls="maintenanceActivityAttention") Atenciones
+          .tab-content(style="width:100%")
+            #maintenanceActivity.tab-pane.active(role="tabpanel")
+              .row.activity-nav-row.nav-row-padding.searchBar
+                .col-md-11
+                  .input-group.has-clear
+                    input.form-control.input-search.search-box(type="text", id="maintenanceActivityAttentionSearchInput", placeholder="Busar atención")
+                    span.form-control-clear.fa.fa-times.fa-3.hidden
+                    a.fa.fa-search.fa-w-16.fa-3x(id="maintenanceActivityAttentionSearchButton", data-type="maintenanceActivityAttentions", data-content=user.session_id)
+                .col-md-1(style="padding-left:0;")
+                  button#manageActivityAttention.btn.btn-primary(type="button", data-toggle="manageActivityModal")
+                    i.fa.fa-plus.noWrap
+                      |  Agregar
+              .row
+                .col-md-12.no-padding
+                  table.table.table-header.table-maintenanceActivityAttention
+                    thead
+                      th #
+                      th Actividad
+                      th Equipo
+                      th Estatus
+                      th Fecha
+                      th
+                    tbody
+                      each maintenanceActivityAttention, i in maintenanceActivityAttentions
+                        tr
+                          td=i + 1
+                          td=maintenanceActivityAttention.maintenanceActivity.name
+                          td=maintenanceActivityAttention.equipment.name
+                          td
+                            if maintenanceActivityAttention.checked == true
+                              label.label-sm.label-success Revisada
+                            else
+                              label.label-sm.label-default Por Revisar
+                          td=maintenanceActivityAttention.date
+                          td
+                            a.btn.default.btn-xs.blue-stripe(onclick="searchMaintenanceActivityAttention('" + maintenanceActivityAttention._id + "')") Ver
                          
   #manageActivityModal.modal.fade(role="dialog")
     .modal-dialog(role="document")

@@ -182,6 +182,7 @@ router.put(
   
   router.get(
     '/maintenanceActivities/:page/:quantity/:search',
+    SessionHandle.isLogged,
     MaintenanceActivity.getMaintenanceActivities);
 
 
@@ -212,6 +213,7 @@ router.put(
 
 router.get(
   '/maintenanceActivityAttentions/:page/:quantity/:search',
+  SessionHandle.isLogged,
   MaintenanceActivityAttention.getMaintenanceActivityAttention);
 
 /* ########################################################################## */

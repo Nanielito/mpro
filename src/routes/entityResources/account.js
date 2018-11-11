@@ -18,71 +18,93 @@ exports.createAccount = function (req, res, next) {
     return res.json({error: true, message: 'No user found'});
   }
 
-  var saveAccountPromise = new Promise(function (resolve, reject) {
-    var account = {
-      name    : req.body.name,
-      username: req.body.username,
-      password: Utils.createHash(''.concat('mpro-', req.body.username.split('@')[0])),
-      email   : req.body.username,
-      role    : req.body.role,
-      status  : req.body.status,
-      company : req.body.branchCompany === undefined ? req.body.company : req.body.branchCompany,
-      //company : req.body.branchcompany === '0' ? req.body.company : req.body.branchcompany,
-      image   : req.body.image
-    };
-  
-    var onCreateDocument = function (err, document) {
-      if (err||document==undefined) {        
-        Log.error({
-          parameters: ['ACCOUNT_EXCEPTION', err],
-          //text      : 'Exception! '.concat(err),
-          user      : req.user._id,
-          model     : JSON.stringify(err)
-        }); 
+  var saveAccountPromise = function(formData){
+    return new Promise(function (resolve, reject) {
+      var account = {
+        name    : formData.name,
+        username: formData.username,
+        password: Utils.createHash(''.concat('mpro-', formData.username.split('@')[0])),
+        email   : formData.username,
+        role    : formData.role,
+        status  : formData.status,
+        company : formData.branchCompany === undefined ? formData.company : formData.branchCompany,
+        //company : req.body.branchcompany === '0' ? req.body.company : req.body.branchcompany,
+        image   : formData.image
+      };
+    
+      var onCreateDocument = function (err, document) {
+        if (err||document==undefined) {        
+          Log.error({
+            parameters: ['ACCOUNT_EXCEPTION', err],
+            //text      : 'Exception! '.concat(err),
+            user      : req.user._id,
+            model     : JSON.stringify(err)
+          }); 
 
-        reject({error: true, code: 500, message: err.message});
-        return;
-      }else{
-        Log.debug({
-          parameters: ['ACCOUNT_CREATE_SUCCESS', req.user.name, document.name],
-          //text      : 'Success on create! '.concat('User ', req.user.name, ' creates account ', document.name),
-          type      : 'create_account',
-          user      : req.user._id,
-          model     : JSON.stringify(document)
-        });
-        
-        var emailContent={
-          to: account.username,
-          subject: AppMessageProvider.getMessage('ACCOUNT_CREATION_EMAIL_SUBJECT'),
-          text: AppMessageProvider.getMessage(
-            'ACCOUNT_CREATION_EMAIL_TEXT',
-            [
-              account.name, 
-              account.username, 
-              'mpro-'.concat(account.email.split('@')[0]),
-              'http://138.68.246.213:3000'
-            ])
+          reject({error: true, code: 500, message: err.message});
+          return;
+        }else{
+          Log.debug({
+            parameters: ['ACCOUNT_CREATE_SUCCESS', req.user.name, document.name],
+            //text      : 'Success on create! '.concat('User ', req.user.name, ' creates account ', document.name),
+            type      : 'create_account',
+            user      : req.user._id,
+            model     : JSON.stringify(document)
+          });
+          
+          var emailContent={
+            to: account.username,
+            subject: AppMessageProvider.getMessage('ACCOUNT_CREATION_EMAIL_SUBJECT'),
+            text: AppMessageProvider.getMessage(
+              'ACCOUNT_CREATION_EMAIL_TEXT',
+              [
+                account.name, 
+                account.username, 
+                'mpro-'.concat(account.email.split('@')[0]),
+                'http://138.68.246.213:3000'
+              ])
+          }
+          
+          EmailService.send(emailContent);
+
+          resolve({error: false, data: document});
         }
-        
-        EmailService.send(emailContent);
+      };
+    
+      var newAccount = new mongoAccount(account);
 
-        resolve({error: false, data: document});
+      newAccount.save(onCreateDocument);
+    });
+  };
+
+  var validateUsernameAccount = new Promise(function (resolve, reject) {
+    var query ={username:req.body.username};
+   
+    mongoAccount
+    .find(query)
+    .exec()
+    .then(function (account) {      
+      if(account.length>0){        
+        return reject({status:500, message:"Usuario existe!"});
       }
-    };
-  
-    var newAccount = new mongoAccount(account);
-
-    newAccount.save(onCreateDocument);
+       else{
+        return resolve(req.body);
+       }
+    })
+    .catch(function (err) {          
+      return reject(err);
+    });
   });
 
   var onFinish = function (data) {
     res.status(200).send(data);
   };
 
-  saveAccountPromise
+  validateUsernameAccount
+  .then(saveAccountPromise)
   .then(onFinish)
-  .catch(function (err) {
-    res.status(err.code).send(err.message);
+  .catch(function (err) {    
+    res.status(500).send(err.message);
   });
 };
 
@@ -94,7 +116,7 @@ exports.getAccounts = function (req, res, next) {
   //if (!req.user || !req.user.username) {
   //  res.status(401).send({error: true, message: 'No user found'});
   //}
-  console.log(req.user)
+
   var page = parseInt(req.params.page) || 0;
   var quantity = parseInt(req.params.quantity) || 0;
   var query = {role: {$nin:['admin']}};
@@ -109,7 +131,7 @@ exports.getAccounts = function (req, res, next) {
     //query['$or']=[{name: new RegExp(searchPattern, 'i')}, {'company.name': searchPattern}, {role: searchPattern}];
     query = {$or: [{name: new RegExp(searchPattern, 'i')}, {'company.name': searchPattern}, {role: searchPattern}]};
   }
-  console.log(query)
+
   mongoAccount
   .find(query, projection)
   .populate({
@@ -127,10 +149,11 @@ exports.getAccounts = function (req, res, next) {
   .then(function (accounts) {
     var result = [], obj = {};
     _.each(accounts, function(val, key){
-      obj = Object.assign({}, val);
+      obj = val;
       obj.date=Utils.formatDate(val.date.toString(), "DD/MM/YY");      
       result.push(obj);
     });
+    console.log(result)
     res.render('partials/accounts-table-body', {
       error:false,
       data: result

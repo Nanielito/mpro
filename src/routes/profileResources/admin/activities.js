@@ -64,9 +64,8 @@ exports.getActivitiesViewData = function (req, res, next) {
   });
 
   var onRender = function (data) {
-    var tempUser = req.user || {};
+    var tempUser = req.user;
     req.user = {};
-
     return res.render('pages/maintenance_activity/maintenance_activity_admin', {
       user: tempUser,
       companies: data[0],

@@ -1,0 +1,13 @@
+each maintenanceActivityAttention, i in maintenanceActivityAttentions
+    tr
+        td=i + 1
+        td=maintenanceActivityAttention.maintenanceActivity.name
+        td=maintenanceActivityAttention.equipment.name
+        td
+            if maintenanceActivityAttention.checked == true
+                label.label-sm.label-success Revisada
+            else
+                label.label-sm.label-default Por Revisar
+        td=maintenanceActivityAttention.date
+        td
+            a.btn.default.btn-xs.blue-stripe(onclick="searchMaintenanceActivityAttention('" + maintenanceActivityAttention._id + "')")

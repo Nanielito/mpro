@@ -47,6 +47,14 @@ var equipment = new Schema(
         comment: String
       }
     ],
+    status: {
+      type: Boolean,
+      default: true
+    },
+    deleted: {
+      type: Boolean,
+      default: false
+    },
     date: {
       type: Date,
       default: Date.now

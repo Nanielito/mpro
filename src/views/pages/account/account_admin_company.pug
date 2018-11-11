@@ -7,19 +7,18 @@ block content-mpro
       .col-md-12
         .row.information-company
           .col-md-12
-            span Empresa a la que colabora 
             h4(style="display:inline-block") <b>#{currentAccount.company.name}</b>
-        .row.user-nav-row.nav-row-padding
-          .col-md-10
+        .row.account-nav-row.nav-row-padding.searchBar
+          .col-md-11
             .input-group.has-clear
-              input.form-control.input-search(type="text", id="userSearchInput", placeholder="Buscar usuario")
+              input.form-control.input-search.search-box(type="text", id="userSearchInput", placeholder="Buscar usuario")
               span.form-control-clear.fa.fa-times.fa-3.hidden
-              a.fa.fa-search.fa-w-16.fa-3x
-          .col-md-2(style="padding-left:0;")
-              button#addAccount.btn.btn-primary.button-search(type="button", data-toggle="addAccountModal")
-                  i.fa.fa-plus 
-                    | Agregar Usuario
-        .row.user-nav-row
+              a.fa.fa-search.fa-w-16.fa-3x(id="userSearchButton")
+          .col-md-1(style="padding-left:0;")
+            button#addAccount.btn.btn-primary.button-search(type="button", data-toggle="addAccountModal")
+              i.fa.fa-plus.noWrap 
+                |  Agregar
+        .row.account-nav-row
           .col-md-12.no-padding
             table.table.table-header
               thead
@@ -32,8 +31,8 @@ block content-mpro
                 th.noWrap Fecha de ingreso
                 th Estatus
                 th
-              each account, i in accounts
-                tbody
+              tbody
+                each account, i in accounts
                   tr(id=account._id)
                     td=i+1
                     td=account.name
@@ -51,12 +50,13 @@ block content-mpro
                       else
                         label.label-sm.label-default Inactivo
                     td                      
-                      a.btn.default.btn-xs.blue-stripe(href="/accounts", name="editAccount", data-toggle="editAccountModal", data-id=account._id) Editar                    
+                      a.btn.default.btn-xs.blue-stripe(href="/accounts", name="editAccount", data-toggle="editAccountModal", data-id=account._id)
+                        i.fa.fa-edit(aria-hidden="true")                    
   #addAccountModal.modal.fadde(role="dialog")
     .modal-dialog(role="document")
       .modal-content
         .modal-header.bg-primary.text-white
-          h4.modal-title.font-weight-bold Agregar Usuario
+          h4.modal-title.font-weight-bold Agregar
           button.close.fa.fa-close(type="button", style="color:white; opacity:1; text-shadow:1px 1px 1px #ccc; text-indent:0" data-dismiss="modal", aria-label="Close")
         .modal-body
           #warningAccountForm.alert.alert-warning.alert-dismissible(role="alert", style="display:none;")

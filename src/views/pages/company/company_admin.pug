@@ -13,17 +13,17 @@ block content-mpro
               a.nav-link(data-toggle="tab", href="#branchCompany", role="tab", aria-controls="branchCompany") Sucursales
           .tab-content(style="width:100%")
             #company.tab-pane.active(role="tabpanel")
-              .row.activity-nav-row
-                .col-md-10
+              .row.company-nav-row.nav-row-padding.searchBar
+                .col-md-11
                   .input-group.has-clear
                     input.form-control.input-search.search-box(type="text", id="companySearchInput", placeholder="Buscar Empresa")
                     span.form-control-clear.fa.fa-times.fa-3.hidden
-                    a.fa.fa-search.fa-w-16.fa-3x(id="entitySearchButtom", data-type="company")
-                .col-md-2(style="padding-left:0;")
+                    a.fa.fa-search.fa-w-16.fa-3x(id="entitySearchButton", data-type="company")
+                .col-md-1(style="padding-left:0;")
                   button#addComapny.btn.btn-primary.button-search(type="button", data-toggle="addCompanyModal")
-                      i.fa.fa-plus.noWrap
-                        | Agregar Empresa
-              .row.activity-nav-row.no-padding
+                    i.fa.fa-plus.noWrap
+                      |  Agregar
+              .row.company-nav-row.no-padding
                 .col-md-12
                   table.table.table-header.table-entity
                     thead
@@ -48,18 +48,19 @@ block content-mpro
                             else
                               label.label-sm.label-default Inactivo
                           td
-                            a.btn.default.btn-xs.blue-stripe.edit-company(href="/entities/".concat(company._id)) Edit                          
+                            a.btn.default.btn-xs.blue-stripe.edit-company(href="/entities/".concat(company._id))
+                              i.fa.fa-edit(aria-hidden="true")                          
             #branchCompany.tab-pane(role="tabpanel")
-              .row.activity-nav-row
-                .col-md-10
+              .row.company-nav-row.nav-row-padding.searchBar
+                .col-md-11
                   .input-group.has-clear
-                    input.form-control.input-search(type="text", id="branchCompanySearchInput", placeholder="Buscar Sucursal")
+                    input.form-control.input-search.search-box(type="text", id="branchCompanySearchInput", placeholder="Buscar Sucursal")
                     span.form-control-clear.fa.fa-times.fa-3.hidden
-                    a.fa.fa-search.fa-w-16.fa-3x(id="entityBranchSearchButtom", data-type="branchCompany")
-                .col-md-2(style="padding-left:0;")
+                    a.fa.fa-search.fa-w-16.fa-3x(id="entityBranchSearchButton", data-type="branchCompany")
+                .col-md-1(style="padding-left:0;")
                   button#addBranchCompany.btn.btn-primary.button-search(type="button", data-toggle="addBranchCompanyModal")
-                      i.fa.fa-plus 
-                        | Agregar Sucursal
+                      i.fa.fa-plus.noWrap
+                        |  Agregar
               .row.company-nav-row.no-padding 
                 .col-md-12
                   table.table.table-header.table-branchEntity
@@ -87,12 +88,13 @@ block content-mpro
                             else
                               label.label-sm.label-default Inactivo
                           td
-                            a.btn.default.btn-xs.blue-stripe.edit-company(href="/entities/".concat(company._id)) Editar
+                            a.btn.default.btn-xs.blue-stripe.edit-company(href="/entities/".concat(company._id))
+                              i.fa.fa-edit(aria-hidden="true")
   #addCompanyModal.modal.fade(rol="dialog")
     .modal-dialog(role="document")
       .modal-content
         .modal-header.bg-primary.text-white
-          h4.modal-title.font-weight-bold Agregar Empresa
+          h4.modal-title.font-weight-bold Agregar
           button.close.fa.fa-close(type="button", style="color:white; opacity:1; text-shadow:1px 1px 1px #ccc; text-indent:0" data-dismiss="modal", aria-label="Close")
         .modal-body
           form(role="form", id="addComapnyForm", name="addComapnyForm", action="/entities", method="post")
@@ -104,11 +106,11 @@ block content-mpro
             .form-group.row
               label.col-3.col-form-label(for="email") Correo
               .col-9
-                input.form-control(type="email", id="email", name="email", placeholder="Correo")
+                input.form-control(type="email", id="email", name="email", placeholder="Correo", no-required)
             .form-group.row
               label.col-3.col-form-label(for="phone") Telefono
               .col-9
-                input.form-control(type="phone", id="phone", name="phone", placeholder="Telefono")
+                input.form-control(type="phone", id="phone", name="phone", placeholder="Telefono", no-required)
             .form-group.row
               label.col-3.col-form-label(for="location") Ubicacion
               .col-9
@@ -120,7 +122,7 @@ block content-mpro
     .modal-dialog(role="document")
       .modal-content
         .modal-header.bg-primary.text-white
-          h4.modal-title.font-weight-bold Agregar Sucursal
+          h4.modal-title.font-weight-bold Agregar
           button.close.fa.fa-close(type="button", style="color:white; opacity:1; text-shadow:1px 1px 1px #ccc; text-indent:0" data-dismiss="modal", aria-label="Close")
         .modal-body
           form(role="form", id="addBranchCompanyForm", name="addBranchCompanyForm", action="/entities", method="post")
@@ -132,11 +134,11 @@ block content-mpro
             .form-group.row
               label.col-3.col-form-label(for="email") Correo
               .col-9
-                input.form-control(type="email", id="email", name="email", placeholder="Correo")
+                input.form-control(type="email", id="email", name="email", placeholder="Correo", no-required)
             .form-group.row
               label.col-3.col-form-label(for="phone") Telefono
               .col-9
-                input.form-control(type="phone", id="phone", name="phone", placeholder="Telefono")
+                input.form-control(type="phone", id="phone", name="phone", placeholder="Telefono", no-required)
             .form-group.row
               label.col-3.col-form-label(for="location") Ubicacion
               .col-9

@@ -1,5 +1,5 @@
-function setDefaultDropDownListOption(containerName) {
-  var container = $('select#'.concat(containerName));
+function setDefaultDropDownListOption(parentContainerName, containerName) {
+  var container = $('#'.concat(parentContainerName, ' select#', containerName));
   var option = '';
 
   container.empty();
@@ -13,9 +13,9 @@ function setDefaultDropDownListOption(containerName) {
   return false;
 }
 
-function setDropDownListOptions(actionName, parameter, containerName) {
+function setDropDownListOptions(actionName, parameter, parentContainerName, containerName, option) {
   var action = ''.concat(actionName ,'/', parameter);
-  var container = $('select#'.concat(containerName)); 
+  var container = $('#'.concat(parentContainerName, ' select#', containerName)); 
 
   container.empty();
   
@@ -27,7 +27,7 @@ function setDropDownListOptions(actionName, parameter, containerName) {
     }
 
     _.each(response.data, function (item, i) {
-      options = options.concat('<option value="', item._id, '">', item.name, '</option>');
+      options = options.concat('<option value="', item._id, '"', (option !== undefined ? (item._id === option.selected ? " selected='selected' " : "") : ""), '>', item.name, '</option>');
     });
 
     container.append(options);
@@ -54,6 +54,64 @@ function searchEquipmentType(identifier) {
     $('#updateEquipmentTypeModal input[type=checkbox]#status').prop('checked', response.data.status).trigger('change');
         
     $('#updateEquipmentTypeModal').modal('show');
+    
+    return false;
+  })
+  .fail(function (xhr, status, error) {
+    var response = xhr.responseJSON;
+    
+    console.log(JSON.stringify(response));
+    
+    return false;
+  });
+}
+
+function searchEquipment(identifier) {
+  var action = ''.concat('/equipments/', identifier);
+  
+  $.get(action)
+  .done(function (response) {
+    $('#updateEquipmentModal input#equipment').val(response.data._id);
+    $('#updateEquipmentModal input#name').val(response.data.name);
+    $('#updateEquipmentModal input#code').val(response.data.code);
+    $('#updateEquipmentModal textarea#location').text(response.data.location ? response.data.location : '');
+    
+    if ($('#updateEquipmentModal select#company').length > 0) {
+      $('#updateEquipmentModal select#company').val(response.data.branchCompany.company).trigger('change');
+    }
+    else {
+      var companyId = $('#updateEquipmentModal input#company').val();
+
+      setDropDownListOptions('/equipmentTypes/company', companyId, 'updateEquipmentModal', 'equipmentType');
+    }
+
+    if ($('#updateEquipmentModal select#branchCompany').length > 0) {
+      setTimeout(function () {
+        $('#updateEquipmentModal select#branchCompany').val(response.data.branchCompany._id).trigger('change');
+        
+        return false;
+      }, 1000);
+    }
+
+    if ($('#updateEquipmentModal select#equipmentType').length > 0) {
+      setTimeout(function () {
+        $('#updateEquipmentModal select#equipmentType').val(response.data.equipmentType);
+        
+        return false;
+      }, 1000);
+    }
+
+    if ($('#updateEquipmentModal select#account').length > 0) {
+      setTimeout(function () {
+        $('#updateEquipmentModal select#account').val(response.data.userAssigned);
+        
+        return false;
+      }, 2000);
+    }
+
+    $('#updateEquipmentModal input[type=checkbox]#status').prop('checked', response.data.status).trigger('change');
+        
+    $('#updateEquipmentModal').modal('show');
     
     return false;
   })
@@ -103,6 +161,48 @@ function deleteEquipmentType(identifier) {
 
 function restoreEquipmentType(identifier) {
   var action = ''.concat('/equipmentTypes/', identifier);
+  var data = {status: true, deleted: false};
+  var onSuccess = function (response) {
+    window.location.reload(true);
+    
+    return false;
+  };
+  var onFailure = function (xhr, status, error) {
+    var response = xhr.responseJSON;
+    
+    console.log(JSON.stringify(response));
+    
+    return false;
+  };
+
+  updateRequest(action, data, onSuccess, onFailure);
+
+  return false;
+}
+
+function deleteEquipment(identifier) {
+  var action = ''.concat('/equipments/', identifier);
+  var data = {status: false, deleted: true};
+  var onSuccess = function (response) {
+    window.location.reload(true);
+    
+    return false;
+  };
+  var onFailure = function (xhr, status, error) {
+    var response = xhr.responseJSON;
+    
+    console.log(JSON.stringify(response));
+    
+    return false;
+  };
+
+  updateRequest(action, data, onSuccess, onFailure);
+
+  return false;
+}
+
+function restoreEquipment(identifier) {
+  var action = ''.concat('/equipments/', identifier);
   var data = {status: true, deleted: false};
   var onSuccess = function (response) {
     window.location.reload(true);
@@ -274,14 +374,6 @@ function searchMaintenanceActivityAttention(identifier) {
 }
 
 $(document).ready(function () {
-  $('#tabEquipmentType a').click(function (e) {
-    e.preventDefault();
-    
-    $(this).tab('show');
-
-    return false;
-  });
-
   $('#addEquipmentType').click(function (e) {
     $('#addEquipmentTypeModal').modal('show');
 
@@ -297,16 +389,17 @@ $(document).ready(function () {
   $('select#company').change(function (e) {
     e.preventDefault();
 
+    var parentContainerName = $(this).parents('form').parents('.modal').attr('id');
     var companyId = $(this).find('option:selected').val();
 
     if (companyId === 'Seleccione') {
-      setDefaultDropDownListOption('branchCompany');
-      setDefaultDropDownListOption('equipmentType');
-      setDefaultDropDownListOption('account');
+      setDefaultDropDownListOption(parentContainerName, 'branchCompany');
+      setDefaultDropDownListOption(parentContainerName, 'equipmentType');
+      setDefaultDropDownListOption(parentContainerName, 'account');
     }
     else {
-      setDropDownListOptions('/entities/branchCompanies/company', companyId, 'branchCompany');
-      setDropDownListOptions('/equipmentTypes/company', companyId, 'equipmentType');
+      setDropDownListOptions('/entities/branchCompanies/company', companyId, parentContainerName, 'branchCompany');
+      setDropDownListOptions('/equipmentTypes/company', companyId, parentContainerName, 'equipmentType');
     }
   
     return false;
@@ -315,13 +408,14 @@ $(document).ready(function () {
   $('select#branchCompany').change(function (e) {
     e.preventDefault();
 
+    var parentContainerName = $(this).parents('form').parents('.modal').attr('id');
     var branchCompanyId = $(this).find('option:selected').val();
 
     if (branchCompanyId === 'Seleccione') {
-      setDefaultDropDownListOption('account');
+      setDefaultDropDownListOption(parentContainerName, 'account');
     }
     else {
-      setDropDownListOptions('/accounts/technicians/branchCompany', branchCompanyId, 'account');
+      setDropDownListOptions('/accounts/technicians/branchCompany', branchCompanyId, parentContainerName, 'account');
     }
   });
 
@@ -403,14 +497,15 @@ $(document).ready(function () {
     return false;
   });
 
-  $('#updateEquipmentTypeSubmit').click(function (e) {
+  $('#updateEquipmentTypeSubmit, #updateEquipmentSubmit').click(function (e) {
     e.preventDefault();
     
     var form = document[$($(this).parents('form')).attr('name')];
     var action = $($(this).parents('form')).attr('action').concat('/', $(form).find('input[type=hidden]').val());
+    var modalName = $(this).attr('id').replace('Submit', 'Modal');
     var data = {};
     var onSuccess = function (response) {
-      $('#updateEquipmentTypeModal').modal('hide');
+      $('#'.concat(modalName)).modal('hide');
       
       window.location.reload(true);
       
@@ -455,6 +550,7 @@ $(document).ready(function () {
     e.preventDefault();
 
     var form = document[$($(this).parents('form')).attr('name')];
+    // THIS!
     var action = $($(this).parents('form')).attr('action').concat('/', $(form).find('input[type=hidden]').val());
     var data = {};
     var onSuccess = function (response) {
@@ -473,6 +569,7 @@ $(document).ready(function () {
         $('#updateMaintenanceActivityAttentionGroup span#finished').show();
         $('#updateMaintenanceActivityAttention button#updateMaintenanceActivityAttentionSubmit').hide();
         $('#updateMaintenanceActivityAttention .form-group input[type=checkbox]').attr('disabled', true);
+        $('#updateMaintenanceActivityAttention textarea#comment').attr('disabled', true);
       }
 
       return false;
@@ -561,62 +658,81 @@ $(document).ready(function () {
       }
     });
 
+    // TODO
+    if ($('#updateMaintenanceActivityAttention textarea#comment').val().trim().length > 0) {
+      var modalContainer = $('#updateMaintenanceActivityAttention').parent();
+      var maintenanceActivityDateId = $(modalContainer).find('input#maintenanceActivityDate').val();
+      var action = $(modalContainer).find('form#updateMaintenanceActivityAttentionGroup').attr('action').concat('/', maintenanceActivityDateId);
+      
+      data = {
+        comment: $('#updateMaintenanceActivityAttention textarea#comment').val()
+      };
+
+      updateRequest(action, data, onSuccess, onFailure);
+    }
+
     return false;
   });
 
-  $(document).on('click', '.searchEquipmentType, .deleteEquipmentType', function(e){
+  $(document).on('click', '.searchEquipmentType, .deleteEquipmentType', function (e) {
     e.preventDefault();
+    
     var _id = this.getAttribute('data-id');
-    if($(this).hasClass('searchEquipmentType')){
+    
+    if ($(this).hasClass('searchEquipmentType')) {
       searchEquipmentType(_id);
-    }else{
+    }
+    else {
       deleteEquipmentType(_id);
     }
+
+    return false;
   });
 
-  $('#equipmentTypeSearchButtom, #equipmentSearchButtom').click(function(e){
+  $('#equipmentTypeSearchButton, #equipmentSearchButton').click(function (e) {
     e.preventDefault();
-    var type= $(this).attr('data-type'), 
-        selector=type=='equipmentTypes'?'table-equipmentType':'table-equipment', 
-        searchImput = $('#'.concat(type=='equipmentTypes'?'equipmentTypeSearchInput':'equipmentSearchInput')).val(), 
-        url='', rows='';
-
-      url='/'.concat(type, '/0/1000/', searchImput.length?searchImput:'all');
-      
-      $.get(url, function(data){
-        
-        if(!data.error){
-
-          if(type=='equipmentTypes'){
-            _.each(data.data, function(value, key){
-              rows=rows.concat(
-                '<tr><td>',key+1, '</td>',
-                '<td>', value.name, '</td>',
-                '<td>', value.company.name, '</td>',
-                '<td>', value.status ? 'Activo': 'Inactivo', '</td>',
-                '<td><a class="btn default btn-xs blue-stripe searchEquipmentType" data-id="',value._id,'">Editar</a></td>',
-                '<td><i class="fa fa-trash deleteEquipmentType" data-id="',value._id,'" aria-hidden="true"></i></td></tr>')
-            });
-          }else{
-            _.each(data.data, function(value, key){
-              rows=rows.concat(
-                '<tr><td>',key+1, '</td>',
-                '<td>', value.name, '</td>',
-                '<td>', value.code, '</td>',
-                '<td>', value.location, '</td>',
-                '<td>', value.equipmentType.name, '</td>',
-                '<td>', value.branchCompany.company.name, '</td>',
-                '<td>', value.branchCompany.name, '</td>',
-                '<td>', value.userAssigned.name, '</td>',
-                '<td><a class="btn default btn-xs blue-stripe" href="/home/equipments/',value._id,'">Editar</a></td>',
-                '<td><i class="fa fa-trash" aria-hidden="true"></i></td></tr>')
-            });
-          }
-          $('.'.concat(selector, ' tbody')).empty();
-          $('.'.concat(selector, ' tbody')).html(rows);
+    
+    var type = $(this).attr('data-type'); 
+    var selector = (type === 'equipmentTypes' ? 'table-equipmentType' : 'table-equipment'); 
+    var searchInput = $('#'.concat(type === 'equipmentTypes' ? 'equipmentTypeSearchInput' : 'equipmentSearchInput')).val(); 
+    var url = '/'.concat(type, '/0/1000/', searchInput.length?searchInput:'all');
+    var rows = '';
+  
+    $.get(url, function (response) {
+      if (!response.error) {
+        if (type === 'equipmentTypes') {
+          _.each(response.data, function (value, key) {
+            rows = rows.concat(
+              '<tr><td>', key + 1, '</td>',
+              '<td>', value.name, '</td>',
+              '<td>', value.company.name, '</td>',
+              '<td>', value.status ? 'Activo': 'Inactivo', '</td>',
+              '<td><a class="btn default btn-xs blue-stripe searchEquipmentType" data-id="', value._id, '">Editar</a></td>',
+              '<td><i class="fa fa-trash deleteEquipmentType" data-id="', value._id, '" aria-hidden="true"></i></td></tr>');
+          });
         }
-      });
+        else {
+          _.each(response.data, function (value, key) {
+            rows = rows.concat(
+              '<tr><td>', key + 1, '</td>',
+              '<td>', value.name, '</td>',
+              '<td>', value.code, '</td>',
+              '<td>', value.location, '</td>',
+              '<td>', value.equipmentType.name, '</td>',
+              '<td>', value.branchCompany.company.name, '</td>',
+              '<td>', value.branchCompany.name, '</td>',
+              '<td>', value.userAssigned.name, '</td>',
+              '<td><a class="btn default btn-xs blue-stripe" href="/home/equipments/', value._id, '">Editar</a></td>',
+              '<td><i class="fa fa-trash" aria-hidden="true"></i></td></tr>');
+          });
+        }
+        
+        $('.'.concat(selector, ' tbody')).empty();
+        $('.'.concat(selector, ' tbody')).html(rows);
+      }
+    });
 
+    return false;
   });
 
   return false;

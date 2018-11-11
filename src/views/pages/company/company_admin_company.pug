@@ -7,7 +7,6 @@ block content-mpro
       .col-md-12
         .row.information-company
           .col-md-12
-            span Empresa a la que colabora 
             h4(style="display:inline-block") <b>#{currentAccount.company.name}</b>
         .row.company-nav-row
           ul.page-nav(role="tablist", id="tabCompany")
@@ -15,15 +14,16 @@ block content-mpro
               a.nav-link.nav-item-active(data-toggle="tab", href="#branchCompany", role="tab", aria-controls="branchCompany") Sucursales
           .tab-content(style="width:100%")
             #branchCompany.tab-pane.active(role="tabpanel")
-              .row.company-nav-row.nav-row-padding
-                .col-md-10
-                  .input-group
-                    input.form-control.input-search(type="text", id="branchCompanySearchInput", placeholder="Buscar Sucursal")
-                    a.fa.fa-search.fa-w-16.fa-3x(id="entityBranchSearchButtom", data-type="branchCompany")
-                .col-md-2(style="padding-left:0;")
+              .row.company-nav-row.nav-row-padding.searchBar
+                .col-md-11
+                  .input-group.has-clear
+                    input.form-control.input-search.search-box(type="text", id="branchCompanySearchInput", placeholder="Buscar Sucursal")
+                    span.form-control-clear.fa.fa-times.fa-3.hidden
+                    a.fa.fa-search.fa-w-16.fa-3x(id="entityBranchSearchn", data-type="branchCompany")
+                .col-md-1(style="padding-left:0;")
                   button#addBranchCompany.btn.btn-primary.button-search(type="button", data-toggle="addBranchCompanyModal")
-                      i.fa.fa-plus.noWrap
-                        | Agregar Sucursal
+                    i.fa.fa-plus.noWrap
+                      |  Agregar
               .row.company-nav-row.no-padding
                 .col-md-12
                   table.table.table-header.table-branchEntity
@@ -51,12 +51,13 @@ block content-mpro
                             else
                               label.label-sm.label-default Inactivo
                           td
-                            a.btn.default.btn-xs.blue-stripe.edit-company(href="/entities/".concat(company._id)) Editar                          
+                            a.btn.default.btn-xs.blue-stripe.edit-company(href="/entities/".concat(company._id))
+                              i.fa.fa-edit(aria-hidden="true")                          
   #addBranchCompanyModal.modal.fade(rol="dialog")
     .modal-dialog(role="document")
       .modal-content
         .modal-header.bg-primary.text-white
-          h4.modal-title Agregar Sucursal
+          h4.modal-title Agregar
           button.close.fa.fa-close(type="button", style="color:white; opacity:1; text-shadow:1px 1px 1px #ccc; text-indent:0" data-dismiss="modal", aria-label="Close")
         .modal-body
           form(role="form", id="addBranchCompanyForm", name="addBranchCompanyForm", action="/entities", method="post")
@@ -68,11 +69,11 @@ block content-mpro
             .form-group.row
               label.col-3.col-form-label(for="email") Correo
               .col-9
-                input.form-control(type="email", id="email", name="email", placeholder="Correo")
+                input.form-control(type="email", id="email", name="email", placeholder="Correo", no-required)
             .form-group.row
               label.col-3.col-form-label(for="phone") Teléfono
               .col-9
-                input.form-control(type="phone", id="phone", name="phone", placeholder="Telefono")
+                input.form-control(type="phone", id="phone", name="phone", placeholder="Telefono", no-required)
             .form-group.row
               label.col-3.col-form-label(for="location") Ubicación
               .col-9
@@ -97,11 +98,11 @@ block content-mpro
             .form-group.row
               label.col-3.col-form-label(for="email") Correo
               .col-9
-                input.form-control(type="email", id="email", name="email", placeholder="Correo")
+                input.form-control(type="email", id="email", name="email", placeholder="Correo", no-required)
             .form-group.row
               label.col-3.col-form-label(for="phone") Telefono
               .col-9
-                input.form-control(type="phone", id="phone", name="phone", placeholder="Telefono")            
+                input.form-control(type="phone", id="phone", name="phone", placeholder="Telefono", no-required)  
             .form-group.row
               label.col-3.col-form-label(for="location") Ubicacion
               .col-9

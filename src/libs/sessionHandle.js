@@ -41,6 +41,11 @@ var sessionHandle = {
     },
     isLogged:function(req, res, next){
         var session_id=req.session._id;
+        if(session_id==undefined){
+            if(req.headers.token!=undefined){
+                session_id=atob(req.headers.token).split(' ')[1];
+            }
+        }
         var validateSession = function(session){
             return new Promise(function(resolve, reject){
 
@@ -78,6 +83,7 @@ var sessionHandle = {
         .then(function(data){            
             if(!data[0]&&data[1]!=null) {
                 req.user=data[1].user;
+                req.user['session_id']=session_id;
             }            
             return next();
         });
