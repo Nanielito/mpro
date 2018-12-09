@@ -73,26 +73,45 @@ block content-mpro
                   table.table.table-header.table-maintenanceActivityAttention
                     thead
                       th #
-                      th Nombre
                       th Equipo
-                      th Estatus
-                      th Fecha
                       th
                     tbody
                       each maintenanceActivityAttention, i in maintenanceActivityAttentions
                         tr
                           td=i + 1
-                          td=maintenanceActivityAttention.maintenanceActivity.name
-                          td=maintenanceActivityAttention.equipment.name
+                          td=maintenanceActivityAttention.name
                           td
-                            if maintenanceActivityAttention.checked == true
-                              label.label-sm.label-success Revisada
-                            else
-                              label.label-sm.label-default Por Revisar
-                          td=maintenanceActivityAttention.date
-                          td
-                            a.btn.default.btn-xs.blue-stripe(onclick="searchMaintenanceActivityAttention('" + maintenanceActivityAttention._id + "')")
-                         
+                            a.btn.default.btn-xs.blue-stripe(onclick="showMaintenanceActivityAttention('" + maintenanceActivityAttention._id + "')") ver
+                          td(style="display:none;", id=maintenanceActivityAttention._id)
+                            table.table.table-header
+                              thead
+                                th #
+                                th Activity
+                                th Fecha
+                                th Status
+                                th
+                              tbody
+                                each attention, i in maintenanceActivityAttention.attentions
+                                  tr
+                                    td=i + 1
+                                    td=attention.maintenanceActivity.name
+                                    td=attention.date
+                                    td
+                                      if attention.checked == true
+                                        label.label-sm.label-success Revisada
+                                      else
+                                        label.label-sm.label-default Por Revisar
+                                    td
+                                      a.btn.default.btn-xs.blue-stripe(onclick="searchMaintenanceActivityAttention('" + maintenanceActivityAttention._id + "')") ver
+  #detailsActivityModal.modal.fade(role="dialog")
+    .modal-dialog(role="document")
+      .modal-content
+        .modal-header.bg-primary.text-white
+          h4.modal-title.font-weight-bold Detelle
+          button.close.fa.fa-close(type="button", style="color:white; opacity:1; text-shadow:1px 1px 1px #ccc; text-indent:0" data-dismiss="modal", aria-label="Close")
+        .modal-body
+        .modal-footer
+          button.btn.btn-secondary(type="button", data-dismiss="modal", style="margin-right:1%;") Cerrar                       
   #manageActivityModal.modal.fade(role="dialog")
     .modal-dialog(role="document")
       .modal-content

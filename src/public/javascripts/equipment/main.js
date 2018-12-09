@@ -323,17 +323,17 @@ function searchMaintenanceActivityAttention(identifier) {
   .done(function (response) {
     console.log(response)
 
-    $('#maintenanceActivityAttentionModal span#date').text(response.data.date);
-    $('#maintenanceActivityAttentionGroup input#maintenanceActivityDate').val(response.data.maintenanceActivityDate);
+    $('#updateMaintenanceActivityAttentionModal span#date').text(response.data.date);
+    $('#updateMaintenanceActivityAttentionGroup input#maintenanceActivityDate').val(response.data.maintenanceActivityDate);
 
     if (response.data.finished === true) {
-      $('#maintenanceActivityAttentionGroup span#finished').show();
+      $('#updateMaintenanceActivityAttentionGroup span#finished').show();
     }
     else if (response.data.finished === false) {
-      $('#maintenanceActivityAttentionGroup span#notFinished').show();
+      $('#updateMaintenanceActivityAttentionGroup span#notFinished').show();
     }
 
-    $('#maintenanceActivityAttention .form-group').remove();
+    $('#updateMaintenanceActivityAttention .form-group').remove();
 
     var html = _.reduce(
       response.data.maintenanceActivityAttentions, 
@@ -353,11 +353,11 @@ function searchMaintenanceActivityAttention(identifier) {
       }, 
       "");
 
-    $('#maintenanceActivityAttention').prepend(html);
+    $('#updateMaintenanceActivityAttention').prepend(html);
 
     _.each(response.data.maintenanceActivityAttentions, function (maintenanceActivityAttention) {
       if (maintenanceActivityAttention.checked == true) {
-        $('#maintenanceActivityAttention .form-group input#'.concat(maintenanceActivityAttention._id)).prop('checked', true);
+        $('#updateMaintenanceActivityAttention .form-group input#'.concat(maintenanceActivityAttention._id)).prop('checked', true);
       }
     });
 

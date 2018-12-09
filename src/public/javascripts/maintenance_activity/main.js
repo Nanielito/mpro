@@ -82,6 +82,71 @@ function searchMaintenanceActivity(identifier) {
   return false;
 }
 
+function showMaintenanceActivityAttention(identifier){
+  $('#detailsActivityModal').modal('show');
+  $('#detailsActivityModal').find('.modal-body').html($('#'+identifier).html());
+}
+
+function searchMaintenanceActivityAttention(identifier) {
+  var action = ''.concat('/maintenanceActivityAttentions/activityDate/', identifier);
+  
+  $.get(action)
+  .done(function (response) {
+    console.log(response)
+
+    $('#updateMaintenanceActivityAttentionModal span#date').text(response.data.date);
+    $('#updateMaintenanceActivityAttentionGroup input#maintenanceActivityDate').val(response.data.maintenanceActivityDate);
+
+    if (response.data.finished === true) {
+      $('#updateMaintenanceActivityAttentionGroup span#finished').show();
+    }
+    else if (response.data.finished === false) {
+      $('#updateMaintenanceActivityAttentionGroup span#notFinished').show();
+    }
+
+    $('#updateMaintenanceActivityAttention .form-group').remove();
+
+    var html = _.reduce(
+      response.data.maintenanceActivityAttentions, 
+      function (accumulator, maintenanceActivityAttention) {
+        accumulator += 
+          '<div class="form-group row">' +
+            '<div class="col-12">' +
+              '<div class="input-group">' +
+                '<span class="input-group-addon">' +
+                  '<input class="form-control-custom" type="checkbox" id="' + maintenanceActivityAttention._id + '" ' + (response.data.enableFinish === true ? '' : 'disabled') + ' />' +
+                '</span>' +
+                '<input class="form-control" style="z-index: 1 !important;" type="text" value="' + maintenanceActivityAttention.maintenanceActivity.name + '" disabled />' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        return accumulator;
+      }, 
+      "");
+
+    $('#updateMaintenanceActivityAttention').prepend(html);
+
+    _.each(response.data.maintenanceActivityAttentions, function (maintenanceActivityAttention) {
+      if (maintenanceActivityAttention.checked == true) {
+        $('#updateMaintenanceActivityAttention .form-group input#'.concat(maintenanceActivityAttention._id)).prop('checked', true);
+      }
+    });
+
+    $('#maintenanceActivityAttentionModal').modal('show');
+
+    return false;
+  })
+  .fail(function (xhr, status, error) {
+    var response = xhr.responseJSON;
+
+    console.log(JSON.stringify(response));
+    
+    return false;
+  });
+
+  return false;
+}
+
 function updateMaintenanceActivity(action, data, onSuccess, onFailure) {
   $.ajax({
     url: action,

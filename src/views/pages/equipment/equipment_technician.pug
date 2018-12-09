@@ -51,7 +51,7 @@ block content-mpro
                           td
                             i.fa.fa-trash(aria-hidden="true")
   
-  #updateMaintenanceActivityAttentionModal.modal.fade(role="dialog")
+  #maintenanceActivityAttentionModal.modal.fade(role="dialog")
     .modal-dialog(role="document")
       .modal-content
         .modal-header.bg-primary.text-white
@@ -60,7 +60,7 @@ block content-mpro
             span#date
           button.close.fa.fa-close(type="button", style="color:white; opacity:1; text-shadow:1px 1px 1px #ccc; text-indent:0" data-dismiss="modal", aria-label="Close")
         .modal-body
-          form(role="form", id="updateMaintenanceActivityAttentionGroup", name="updateMaintenanceActivityAttentionGroup", action="/equipments/maintenanceActivityDates", method="put")
+          form(role="form", id="maintenanceActivityAttentionGroup", name="maintenanceActivityAttentionGroup", action="/equipments/maintenanceActivityDates", method="put")
             .form-group.row
               .col-md-6(style="text-align:left")
                 h4.font-weight-bold Estado: 
@@ -78,9 +78,10 @@ block content-mpro
               label.col-12.col-form-label(for="comment") Observaciones:
               .col-12
                 textarea.form-control(id="comment", name="comment", wrap="hard")
+
             .row
               .col-12(style="text-align:right")
                 button.btn.btn-secondary(type="button", data-dismiss="modal", style="margin-right:1%;") Cerrar
-                button#updateMaintenanceActivityAttentionSubmit.btn.btn-primary(type="submit", style="display:none;") Guardar
+                button#maintenanceActivityAttentionSubmit.btn.btn-primary(type="submit", style="display:none;") Guardar
   script(src='../../javascripts/equipment/main.js')
     

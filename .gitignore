@@ -1,6 +1,7 @@
 # IDE stuff
 *.iml
 .idea/
+.vscode/
 
 # Logs
 logs
@@ -42,3 +43,5 @@ docker/**/
 
 # Notifications
 mpro_notifications/
+
+test/router/profileResources/activities.json

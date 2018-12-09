@@ -1,0 +1,9 @@
+{
+	"db": {
+		"user": "heroku_zn97rprv:3nriqueyt@",
+		"password": "3nriqueyt",
+		"host": "ds241493.mlab.com",
+		"port": "41493",
+		"name": "heroku_zn97rprv"
+	}
+}

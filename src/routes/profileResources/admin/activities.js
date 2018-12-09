@@ -50,13 +50,21 @@ exports.getActivitiesViewData = function (req, res, next) {
 
     mongoMaintenanceActivityAttention.find(query).populate('maintenanceActivity').populate('equipment').lean().exec()
     .then(function (maintenanceActivityAttentions) {
-      var maintenanceActivityAttentions = Functional.map(maintenanceActivityAttentions, function (maintenanceActivityAttention) {
-        maintenanceActivityAttention.date = Utils.formatDate(maintenanceActivityAttention.date.toString(), DATE_FORMAT);
-        
-        return maintenanceActivityAttention;
-      });
 
-      resolve(maintenanceActivityAttentions);
+      var arrMaintenanceActivityAttentions=[];
+
+        Functional.forEach(maintenanceActivityAttentions, function(element, i) {
+          element.date = Utils.formatDate(element.date.toString(), DATE_FORMAT);
+          element.equipment.date  = Utils.formatDate(element.equipment.date.toString(), DATE_FORMAT);
+            var exist = Functional.filter(arrMaintenanceActivityAttentions, function(o) { return o._id == element.equipment._id && o.date == element.equipment.date; });
+            if(exist.length==0) {
+                element.equipment['attentions']=[];
+                arrMaintenanceActivityAttentions.push(element.equipment);
+            }
+            arrMaintenanceActivityAttentions[arrMaintenanceActivityAttentions.length-1].attentions.push(element);
+        });
+        
+      resolve(arrMaintenanceActivityAttentions);
     })
     .catch(function (err) {
       reject(err);

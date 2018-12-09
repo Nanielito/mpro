@@ -30,6 +30,8 @@
     "debug": "~2.6.3",
     "express": "~4.15.2",
     "express-session": "^1.15.3",
+    "lodash": "^4.17.11",
+    "mocha": "^5.2.0",
     "moment": "^2.19.1",
     "mongo-sanitize": "^1.0.0",
     "mongoose": "^4.11.1",
