@@ -71,8 +71,8 @@ block content-mpro
                   span(style="display:none;", id="finished") Finalizado
               .col-md-6(style="text-align:right")
                 input.form-control(type="hidden", id="maintenanceActivityDate", name="maintenanceActivityDate")
-                button#startAttentionSubmit.btn.btn-primary(type="submit", style="display:none; cursor:pointer; background-color:rgb(0,155,219)") Iniciar
-                button#finishAttentionSubmit.btn.btn-primary(type="submit", style="display:none; cursor:pointer; background-color:rgb(0,155,219)") Finalizar
+                button#startAttentionSubmit.btn.btn-primary(type="submit", style="display:none; cursor:pointer; background-color:rgb(0,155,219); width: 60%;") Iniciar
+                button#finishAttentionSubmit.btn.btn-primary(type="submit", style="display:none; cursor:pointer; background-color:rgb(0,155,219); width: 60%;") Finalizar
           form(role="form", id="updateMaintenanceActivityAttention", name="updateMaintenanceActivityAttention", action="/maintenanceActivityAttentions", method="put")
             .row#commentRow(style="display:none;")
               label.col-12.col-form-label(for="comment") Observaciones:

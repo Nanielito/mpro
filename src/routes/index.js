@@ -309,8 +309,7 @@ router.get('/home/equipments/:id', SessionHandle.isLogged, function (req, res, n
       var rangeDates = Utils.getLimitDates(maintenanceActivityDate.date);
 
       if (maintenanceActivityDate.started === false && 
-        rangeDates.min.getTime() <= currentDate && 
-        currentDate <= rangeDates.max.getTime()) {
+        rangeDates.min.getTime() <= currentDate && currentDate <= rangeDates.max.getTime()) {
         enable = true;
       }
 
@@ -320,8 +319,7 @@ router.get('/home/equipments/:id', SessionHandle.isLogged, function (req, res, n
     var enableFinish = function (maintenanceActivityDate) {
       var enable = false;
 
-      if (maintenanceActivityDate.started === true &&
-        typeof maintenanceActivityDate.finishedDate === 'undefined') {
+      if (maintenanceActivityDate.started === true && typeof maintenanceActivityDate.finishedDate === 'undefined') {
         enable = true;
       }
 
@@ -355,6 +353,7 @@ router.get('/home/equipments/:id', SessionHandle.isLogged, function (req, res, n
           result['maintenanceActivityDate'] = data[1].nextToAttend._id;
           result['date'] = Utils.formatDate(data[1].nextToAttend.date, DATE_FORMAT);
           result['maintenanceActivityAttentions'] = maintenanceActivityAttentions;
+          result['comment'] = data[1].nextToAttend.comment;
           
           delete data[1].nextToAttend;
 

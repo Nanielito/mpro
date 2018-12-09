@@ -336,77 +336,17 @@ exports.getNextMaintenanceActivityAttention = function (req, res, next) {
   });
 };
 
-exports.getMaintenanceActivityAttentionByActivityDate = function (req, res, next) {
-  if (!req.user || !req.user.username) {
-    res.status(401).send({error: true, message: 'No user found'});
-  }
-
-  var maintenanceActivityDatePromise = new Promise(function (resolve, reject) {
-    var query = {'maintenanceActivityDates.identifier': req.params.identifier};
-    var projection = {_id: 0, 'maintenanceActivityDates.$': 1};
-
-    mongoEquipment.findOne(query).select(projection).exec()
-    .then(function (data) {
-      resolve(data.maintenanceActivityDates[0]);
-    })
-    .catch(function (err) {
-      reject({error: true, code: 500, message: err.message});
-    })
-  });
-
-  var getMaintenanceAttention = function (maintenanceActivityDate) {
-    var promise = new Promise(function (resolve, reject) {
-      if (typeof maintenanceActivityDate !== 'undefined') {
-        var query = {identifier: maintenanceActivityDate.identifier};
-  
-        mongoMaintenanceActivityAttention
-        .find(query)
-        .populate({path: 'maintenanceActivity', select: {_id: 0, name: 1}})
-        .exec()
-        .then(function (maintenanceActivityAttentions) {
-          var result = {};
-
-          result['started'] = maintenanceActivityDate.started,
-          result['finished'] = maintenanceActivityDate.finished;
-          result['maintenanceActivityDate'] = maintenanceActivityDate._id;
-          result['date'] = Utils.formatDate(maintenanceActivityDate.date, DATE_FORMAT);
-          result['maintenanceActivityAttentions'] = maintenanceActivityAttentions;
-          
-          resolve({error: false, data: result});
-        })
-        .catch(function (err) {
-          reject({error: true, code: 500, message: err.message});
-        });
-      }
-      else {
-        reject({error: true, code: 404, message: 'No document found'});
-      }
-    });
-  
-    return promise;
-  };
-
-  var onFinish = function (data) {
-    res.status(200).send(data);
-  };  
-
-  maintenanceActivityDatePromise
-  .then(getMaintenanceAttention)
-  .then(onFinish)
-  .catch(function (err) {
-    res.status(err.code).send(err.message);
-  });
-};
-
-exports.getMaintenanceActivityAttention = function (req, res, next) {
-  
-  var onFetchEquipmentTypes = function (user) {
+exports.getMaintenanceActivityAttentions = function (req, res, next) {
+  var equipmentTypesPromise = function (user) {
     var promise = new Promise(function (resolve, reject) {
       var query;
-      if(user.company==undefined)
+
+      if (user.company === undefined) {
         query = {}
-      else
+      }
+      else {
         query = {company: user.company._id };
+      }
 
       mongoEquipmentType.find(query).exec()
       .then(function (equipmentTypes) {
@@ -422,24 +362,33 @@ exports.getMaintenanceActivityAttention = function (req, res, next) {
 
   var onFetchMaintenanceActivities = function (data) {
     var promise = new Promise(function (resolve, reject) {
-      var query, expression;
-      if(data[0].role=='admin')
-        query={};
-      else
-        query = {company: data[0].company.company != undefined ? data[0].company.company._id : data[0].company._id};
+      var query = null;
+      var expression = null;
+      var searchPattern = '';
+      
+      if (data[0].role === 'admin') {
+        query = {};
+      }
+      else {
+        query = {company: data[0].company.company !== undefined ? data[0].company.company._id : data[0].company._id};
+      }
+      
       if (typeof req.params.search !== 'undefined' && req.params.search != 'all') {
-        var searchPattern = req.params.search;
+        searchPattern = req.params.search;
       }
       
       mongoMaintenanceActivity.find(query).populate('equipmentType').exec()
       .then(function (maintenanceActivitiesResult) {
-        var maintenanceActivities=[];
-        Functional.each(maintenanceActivitiesResult, function(currentvalue){          
-          expression=new RegExp(searchPattern, 'i');
-          if(expression.exec(currentvalue.name)!=null){            
-            maintenanceActivities.push(currentvalue);
+        var maintenanceActivities = Functional.reduce(maintenanceActivitiesResult, function (accumulator, currentValue) {          
+          expression = new RegExp(searchPattern, 'i');
+          
+          if (expression.exec(currentValue.name) !== null) {            
+            accumulator.push(currentValue);
           }
-        });
+
+          return accumulator;
+        }, []);
+
         data.push(maintenanceActivities);
         resolve(data);
       })
@@ -480,16 +429,82 @@ exports.getMaintenanceActivityAttention = function (req, res, next) {
     return promise;
   };
 
-  onFetchEquipmentTypes(req.user)
+  equipmentTypesPromise(req.user)
   .then(onFetchMaintenanceActivities)
   .then(onFetchMaintenanceActivityAttentions)
-  .then(function(data){ 
+  .then(function (data) { 
     res.render('partials/maintenance-table-body', {
-      error:false,
+      error: false,
       maintenanceActivityAttentions: data[3]
     }); 
   });
+};
 
+exports.getMaintenanceActivityAttention = function (req, res, next) {
+  
+};
+
+exports.getMaintenanceActivityAttentionByActivityDate = function (req, res, next) {
+  if (!req.user || !req.user.username) {
+    res.status(401).send({error: true, message: 'No user found'});
+  }
+
+  var maintenanceActivityDatePromise = new Promise(function (resolve, reject) {
+    var query = {'maintenanceActivityDates.identifier': req.params.identifier};
+    var projection = {_id: 0, 'maintenanceActivityDates.$': 1};
+
+    mongoEquipment.findOne(query).select(projection).exec()
+    .then(function (data) {
+      resolve(data.maintenanceActivityDates[0]);
+    })
+    .catch(function (err) {
+      reject({error: true, code: 500, message: err.message});
+    })
+  });
+
+  var getMaintenanceAttention = function (maintenanceActivityDate) {
+    var promise = new Promise(function (resolve, reject) {
+      if (typeof maintenanceActivityDate !== 'undefined') {
+        var query = {identifier: maintenanceActivityDate.identifier};
+  
+        mongoMaintenanceActivityAttention
+        .find(query)
+        .populate({path: 'maintenanceActivity', select: {_id: 0, name: 1}})
+        .exec()
+        .then(function (maintenanceActivityAttentions) {
+          var result = {};
+
+          result['started'] = maintenanceActivityDate.started,
+          result['finished'] = maintenanceActivityDate.finished;
+          result['maintenanceActivityDate'] = maintenanceActivityDate._id;
+          result['date'] = Utils.formatDate(maintenanceActivityDate.date, DATE_FORMAT);
+          result['comment'] = maintenanceActivityDate.comment;
+          result['maintenanceActivityAttentions'] = maintenanceActivityAttentions;
+          
+          resolve({error: false, data: result});
+        })
+        .catch(function (err) {
+          reject({error: true, code: 500, message: err.message});
+        });
+      }
+      else {
+        reject({error: true, code: 404, message: 'No document found'});
+      }
+    });
+  
+    return promise;
+  };
+
+  var onFinish = function (data) {
+    res.status(200).send(data);
+  };  
+
+  maintenanceActivityDatePromise
+  .then(getMaintenanceAttention)
+  .then(onFinish)
+  .catch(function (err) {
+    res.status(err.code).send(err.message);
+  });
 };
 
 /* ########################################################################## */

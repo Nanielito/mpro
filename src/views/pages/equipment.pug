@@ -74,6 +74,14 @@ block content-mpro
                               span.input-group-addon
                                 input.form-control-custom(type="checkbox", id=maintenanceActivityAttention._id, disabled=(user.role == 'technician' && nextMaintenanceActivityAttention.enableFinish == true ? false : true), checked=(maintenanceActivityAttention.checked == true ? "checked" : undefined))
                               input.form-control(type="text", style="z-index: 1 !important", value=maintenanceActivityAttention.maintenanceActivity.name, disabled="true")
+                    form(role="form", id="updateMaintenanceActivityAttentionGroup", name="updateMaintenanceActivityAttentionGroup", action="/equipments/maintenanceActivityDates", method="put")
+                      .row#commentRow(style="display:block;")
+                        label.col-12.col-form-label(for="comment") Observaciones:
+                          .col-12
+                        if user.role == 'technician' && nextMaintenanceActivityAttention.enableFinish == true
+                            textarea.form-control(id="comment", name="comment", wrap="hard") #{nextMaintenanceActivityAttention.comment}
+                        else
+                            textarea.form-control(id="comment", name="comment", wrap="hard", disabled="true") #{nextMaintenanceActivityAttention.comment}
                       if user.role == 'technician'
                         .row
                           .col-12(style="text-align:right")
@@ -98,7 +106,8 @@ block content-mpro
                             td=i + 1
                             td=maintenanceActivityDate.date
                             td
-                              a.btn.default.btn-xs.blue-stripe(onclick="searchMaintenanceActivityAttention('" + maintenanceActivityDate.identifier + "')") Ver
+                              a.btn.default.btn-xs.blue-stripe(onclick="searchMaintenanceActivityAttention('" + maintenanceActivityDate.identifier + "')")
+                                i.fa.fa-search(aria-hidden="true")
             .container
               .portlet.light
                 .portlet-title
@@ -139,5 +148,9 @@ block content-mpro
                   span(style="display:none;", id="finished") Finalizado
                   span(style="display:none;", id="notFinished") No Finalizado
           form(role="form", id="maintenanceActivityAttention", name="maintenanceActivityAttention", action="", method="")
-          
+            .row#commentRow(style="display:block;")
+              label.col-12.col-form-label(for="comment") Observaciones:
+                .col-12
+                  textarea.form-control(id="comment", name="comment", wrap="hard", disabled="true")
+                  
   script(src='../../../javascripts/equipment/main.js')

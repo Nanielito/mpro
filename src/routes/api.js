@@ -201,6 +201,16 @@ router.get(
   MaintenanceActivityAttention.getNextMaintenanceActivityAttention);
 
 router.get(
+  '/maintenanceActivityAttentions/:page/:quantity/:search',
+  SessionHandle.isLogged,
+  MaintenanceActivityAttention.getMaintenanceActivityAttentions);
+
+// router.get(
+//   '/maintenanceActivityAttentions/:identifier',
+//   SessionHandle.isLogged,
+//   MaintenanceActivityAttention.getMaintenanceActivityAttention);
+
+router.get(
   '/maintenanceActivityAttentions/activityDate/:identifier',
   SessionHandle.isLogged,
   MaintenanceActivityAttention.getMaintenanceActivityAttentionByActivityDate);
@@ -211,10 +221,6 @@ router.put(
   MaintenanceActivityAttention.updateMaintenanceActivityAttention
 );
 
-router.get(
-  '/maintenanceActivityAttentions/:page/:quantity/:search',
-  SessionHandle.isLogged,
-  MaintenanceActivityAttention.getMaintenanceActivityAttention);
 
 /* ########################################################################## */
 /* NOTIFICATIONS                                                              */

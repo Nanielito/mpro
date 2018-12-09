@@ -295,6 +295,9 @@ function searchNextMaintenanceActivityAttention(identifier) {
   
       return false;
     });
+
+    var comment = response.data.comment;
+    $('#updateMaintenanceActivityAttentionModal textarea#comment').val(comment !== undefined ? comment : '');
     
     $('#updateMaintenanceActivityAttentionModal').modal('show');
 
@@ -357,6 +360,9 @@ function searchMaintenanceActivityAttention(identifier) {
         $('#maintenanceActivityAttention .form-group input#'.concat(maintenanceActivityAttention._id)).prop('checked', true);
       }
     });
+
+    var comment = response.data.comment;
+    $('#maintenanceActivityAttentionModal textarea#comment').val(comment !== undefined ? comment : '');
 
     $('#maintenanceActivityAttentionModal').modal('show');
 
